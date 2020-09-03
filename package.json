@@ -63,7 +63,7 @@
   },
   "description": "",
   "auto-updater": {
-    "repo": "devops-jazeera/api-pos",
+    "repo": "devops-jazeera/jpos-api",
     "branch": "master"
   }
 }

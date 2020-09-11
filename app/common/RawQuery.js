@@ -350,6 +350,11 @@ var RawQuery = /** @class */ (function () {
             });
         });
     };
+    // async getReturnLines(data: any){
+    //   let query:string  = `
+    //   select itemid, sum(qty), configid, inventsizeid, batchno from inventtrans where transrefid = '${data.salesId}
+    //   `
+    // }
     RawQuery.prototype.updateInventTrans = function (data) {
         return __awaiter(this, void 0, void 0, function () {
             var query;
@@ -752,6 +757,22 @@ var RawQuery = /** @class */ (function () {
                 query = "\n                UPDATE discountvoucher\n                SET  salesid='" + data.salesId + "', \n                custaccount='" + data.custAccount + "', \n                is_used=0, \n                used_numbers=used_numbers+1\n                WHERE voucher_num='" + data.voucherNum + "';\n                ";
                 this.db.query(query);
                 return [2 /*return*/];
+            });
+        });
+    };
+    RawQuery.prototype.getVoucherDetails = function (voucher) {
+        return __awaiter(this, void 0, void 0, function () {
+            var query, data;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        query = "\n                select * from discountvoucher\n                WHERE voucher_num='" + voucher.voucherNum + "';\n                ";
+                        return [4 /*yield*/, this.db.query(query)];
+                    case 1:
+                        data = _a.sent();
+                        console.log(data);
+                        return [2 /*return*/, data];
+                }
             });
         });
     };

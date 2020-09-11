@@ -172,10 +172,10 @@ var SalesTableDAO = /** @class */ (function () {
                                     query += " AND \"SalesTable\".\"status\" IN ('PAID', 'POSTED') ";
                                     console.log(data);
                                     if (data.type == "designerservice") {
-                                        query += "AND \"SalesTable\".\"salesid\" NOT IN  ( \n              select intercompanyoriginalsalesid from salestable \n              where transkind = 'DESIGNERSERVICERETURN'\n              )  and \"SalesTable\".\"salestype\" is null";
+                                        query += " AND \"SalesTable\".\"salesid\" NOT IN  ( \n              select intercompanyoriginalsalesid from salestable \n              where transkind = 'DESIGNERSERVICERETURN'\n              )  and \"SalesTable\".\"salestype\" is null ";
                                     }
                                 }
-                                query += "AND \"SalesTable\".\"transkind\" IN " + data.transkind + " ORDER BY \"SalesTable\".\"lastmodifieddate\" DESC offset " + (data.page - 1) * data.pageCount + " limit " + data.pageCount;
+                                query += " AND \"SalesTable\".\"transkind\" IN " + data.transkind + " ORDER BY \"SalesTable\".\"lastmodifieddate\" DESC offset " + (data.page - 1) * data.pageCount + " limit " + data.pageCount + " ";
                                 break;
                         }
                         return [4 /*yield*/, this.db.query(query)];

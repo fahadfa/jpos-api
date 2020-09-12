@@ -189,7 +189,6 @@ var InventsizeService = /** @class */ (function () {
             return __generator(this, function (_d) {
                 switch (_d.label) {
                     case 0:
-                        if (!!reqData.pricegroup) return [3 /*break*/, 3];
                         this.rawQuery.sessionInfo = this.sessionInfo;
                         return [4 /*yield*/, this.rawQuery.getCustomer(reqData.custaccount)];
                     case 1:
@@ -200,10 +199,10 @@ var InventsizeService = /** @class */ (function () {
                         if (getCustomer.walkincustomer == true) {
                             reqData.custaccount = this.sessionInfo.defaultcustomerid;
                         }
-                        reqData.pricegroup = defaultcustomer.pricegroup;
-                        reqData.currency = defaultcustomer.currency;
-                        _d.label = 3;
-                    case 3:
+                        if (!reqData.pricegroup) {
+                            reqData.pricegroup = defaultcustomer.pricegroup;
+                            reqData.currency = defaultcustomer.currency;
+                        }
                         reqData.spGroup = "SP";
                         queryData = {
                             custaccount: reqData.custaccount,
@@ -220,7 +219,7 @@ var InventsizeService = /** @class */ (function () {
                         }
                         queryData.inventsizeids = queryData.inventsizeids.map(function (d) { return "'" + d + "'"; }).join(",");
                         return [4 /*yield*/, this.rawQuery.allSizePrices(queryData)];
-                    case 4:
+                    case 3:
                         prices = _d.sent();
                         _loop_1 = function (size) {
                             var amount = prices.filter(function (v) { return v.inventsizeid == size.code && v.accountrelation == queryData.custaccount; });

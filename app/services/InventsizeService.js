@@ -185,19 +185,25 @@ var InventsizeService = /** @class */ (function () {
     };
     InventsizeService.prototype.getPrices = function (reqData) {
         return __awaiter(this, void 0, void 0, function () {
-            var defaultcustomer, queryData, _i, _a, size, prices, _loop_1, _b, _c, size;
+            var getCustomer, defaultcustomer, queryData, _i, _a, size, prices, _loop_1, _b, _c, size;
             return __generator(this, function (_d) {
                 switch (_d.label) {
                     case 0:
-                        if (!!reqData.pricegroup) return [3 /*break*/, 2];
+                        if (!!reqData.pricegroup) return [3 /*break*/, 3];
                         this.rawQuery.sessionInfo = this.sessionInfo;
-                        return [4 /*yield*/, this.rawQuery.getCustomer(this.sessionInfo.defaultcustomerid)];
+                        return [4 /*yield*/, this.rawQuery.getCustomer(reqData.custaccount)];
                     case 1:
+                        getCustomer = _d.sent();
+                        return [4 /*yield*/, this.rawQuery.getCustomer(this.sessionInfo.defaultcustomerid)];
+                    case 2:
                         defaultcustomer = _d.sent();
+                        if (getCustomer.walkincustomer == true) {
+                            reqData.custaccount = this.sessionInfo.defaultcustomerid;
+                        }
                         reqData.pricegroup = defaultcustomer.pricegroup;
                         reqData.currency = defaultcustomer.currency;
-                        _d.label = 2;
-                    case 2:
+                        _d.label = 3;
+                    case 3:
                         reqData.spGroup = "SP";
                         queryData = {
                             custaccount: reqData.custaccount,
@@ -214,7 +220,7 @@ var InventsizeService = /** @class */ (function () {
                         }
                         queryData.inventsizeids = queryData.inventsizeids.map(function (d) { return "'" + d + "'"; }).join(",");
                         return [4 /*yield*/, this.rawQuery.allSizePrices(queryData)];
-                    case 3:
+                    case 4:
                         prices = _d.sent();
                         _loop_1 = function (size) {
                             var amount = prices.filter(function (v) { return v.inventsizeid == size.code && v.accountrelation == queryData.custaccount; });

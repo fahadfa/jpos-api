@@ -440,7 +440,7 @@ var RawQuery = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        query = "select distinct itemid from\n              (\n              select i.itemid from inventtable i\n               inner join configtable c on c.itemid = i.itemid\n               inner join inventsize sz on sz.itemid = i.itemid\n               inner join inventtrans ioh on ioh.itemid = i.itemid\n               where ioh.inventlocationid='" + inventlocationid + "' GROUP BY\n               i.itemid\n               having SUM(qty)>0\n               ) as i";
+                        query = "select distinct itemid from\n              (\n              select i.itemid from inventtable i\n               inner join configtable c on c.itemid = i.itemid\n               inner join inventsize sz on sz.itemid = i.itemid\n               inner join inventtrans ioh on ioh.itemid = i.itemid\n               where ioh.inventlocationid='" + inventlocationid + "'  and transactionclosed = true GROUP BY\n               i.itemid\n               having SUM(qty)>0\n               ) as i";
                         return [4 /*yield*/, this.db.query(query)];
                     case 1:
                         data = _a.sent();

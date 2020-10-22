@@ -60,6 +60,7 @@ pg_1.types.setTypeParser(1114, function (stringValue) {
     return stringValue.replace(" ", "T");
 });
 var log = Log_1.log;
+Config.setStagingConfig();
 var SyncServiceHelper = /** @class */ (function () {
     function SyncServiceHelper() {
     }
@@ -409,11 +410,11 @@ var SyncServiceHelper = /** @class */ (function () {
     // }
     SyncServiceHelper.LocalDBOptions = function () {
         return {
-            host: Config.localDbOptions.host,
-            port: Config.localDbOptions.port,
-            user: Config.localDbOptions.username,
-            password: Config.localDbOptions.password,
-            database: Config.localDbOptions.database,
+            host: Config.dbOptions.host,
+            port: Config.dbOptions.port,
+            user: Config.dbOptions.username,
+            password: Config.dbOptions.password,
+            database: Config.dbOptions.database,
         };
     };
     SyncServiceHelper.UpdateCall = function (type, data) {

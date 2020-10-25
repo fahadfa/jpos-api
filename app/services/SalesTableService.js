@@ -1690,6 +1690,7 @@ var SalesTableService = /** @class */ (function () {
                                 configid: item.configId,
                                 inventsizeid: item.inventsizeid,
                                 batchno: batch.batchNo,
+                                invoiceid: reqData.salesId
                             })];
                     case 5:
                         availability = _c.sent();

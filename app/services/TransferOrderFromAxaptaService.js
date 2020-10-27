@@ -150,6 +150,7 @@ var TransferOrderFromAxaptaService = /** @class */ (function () {
                                 batches.invoiceid = salesLine.salesId;
                                 batches.batchno = salesLine.batchNo;
                                 batches.configid = salesLine.configId;
+                                batches.reservationid = salesLine.colorantId;
                                 batches.inventsizeid = salesLine.inventsizeid;
                                 batches.inventlocationid = salesLine.inventLocationId;
                                 batches.dataareaid = salesLine.dataareaid.toLowerCase();

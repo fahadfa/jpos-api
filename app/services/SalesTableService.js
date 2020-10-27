@@ -1690,7 +1690,7 @@ var SalesTableService = /** @class */ (function () {
                                 configid: item.configId,
                                 inventsizeid: item.inventsizeid,
                                 batchno: batch.batchNo,
-                                invoiceid: reqData.salesId
+                                invoiceid: reqData.salesId,
                             })];
                     case 5:
                         availability = _c.sent();
@@ -2772,6 +2772,7 @@ var SalesTableService = /** @class */ (function () {
                         batches.dataareaid = reqData.dataareaid;
                         batches.reserveStatus = reqData.status;
                         batches.transactionClosed = false;
+                        batches.reservationid = item.colorantId;
                         batches.custvendac = reqData.custAccount;
                         batches.dateinvent = moment().format();
                         batches.salesLineId = item.id;
@@ -2936,7 +2937,12 @@ var SalesTableService = /** @class */ (function () {
                         batches_5 = _c.sent();
                         if (batches_5.length > 0) {
                             salesLine.map(function (v) {
-                                v.batches = batches_5.filter(function (b) { return b.configid == v.configId && b.itemid == v.itemid && b.inventsizeid == v.inventsizeid; });
+                                v.batches = batches_5.filter(function (b) {
+                                    return b.configid == v.configId &&
+                                        b.itemid == v.itemid &&
+                                        b.inventsizeid == v.inventsizeid &&
+                                        v.colorantId == b.reservationid;
+                                });
                             });
                         }
                         _i = 0, salesLine_11 = salesLine;
@@ -2973,6 +2979,7 @@ var SalesTableService = /** @class */ (function () {
                         batches_6.dataareaid = reqData.dataareaid;
                         batches_6.custvendac = reqData.custAccount;
                         batches_6.reserveStatus = reqData.status;
+                        batches_6.reservationid = item.colorantId;
                         batches_6.transactionClosed = false;
                         batches_6.dateinvent = new Date(App_1.App.DateNow());
                         batches_6.salesLineId = item.id;
@@ -3253,8 +3260,11 @@ var SalesTableService = /** @class */ (function () {
                         return [4 /*yield*/, this.salestableDAO.save(transferorder)];
                     case 2:
                         transferorder = _a.sent();
-                        if (!(transferorder.transkind == 'ORDERSHIPMENT')) return [3 /*break*/, 5];
-                        return [4 /*yield*/, this.salestableDAO.save({ salesId: transferorder.interCompanyOriginalSalesId, status: 'REJECTED' })];
+                        if (!(transferorder.transkind == "ORDERSHIPMENT")) return [3 /*break*/, 5];
+                        return [4 /*yield*/, this.salestableDAO.save({
+                                salesId: transferorder.interCompanyOriginalSalesId,
+                                status: "REJECTED",
+                            })];
                     case 3:
                         transferorder = _a.sent();
                         return [4 /*yield*/, this.rawQuery.updateSalesLine(transferorder.interCompanyOriginalSalesId, "REJECTED")];

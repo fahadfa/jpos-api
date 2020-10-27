@@ -2579,7 +2579,7 @@ var SalesTableService = /** @class */ (function () {
                         taxItemGroup = _c.sent();
                         item.taxItemGroup = taxItemGroup.taxitemgroupid;
                         item.status = reqData.status;
-                        if (!(item.batches && item.batches.length > 0)) return [3 /*break*/, 22];
+                        if (!(item.batches && item.batches.length > 0 && item.salesQty > 0)) return [3 /*break*/, 22];
                         _a = 0, _b = item.batches;
                         _c.label = 19;
                     case 19:
@@ -2615,6 +2615,7 @@ var SalesTableService = /** @class */ (function () {
                         _a++;
                         return [3 /*break*/, 19];
                     case 22:
+                        item.batches = [];
                         promiseList.push(queryRunner.manager.getRepository(SalesLine_1.SalesLine).save(item));
                         _c.label = 23;
                     case 23:

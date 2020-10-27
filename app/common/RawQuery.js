@@ -742,7 +742,7 @@ var RawQuery = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        query = "SELECT \n                  id, \n                  dataareaid, \n                  salesid, \n                  custaccount, \n                  is_used, \n                  is_enabled,\n                  voucher_num, \n                  voucher_type, \n                  discount_percent, \n                  allowed_numbers, \n                  used_numbers, \n                  expiry_date\n                  FROM public.discountvoucher\n                  WHERE voucher_num='" + code + "' and dataareaid = '" + dataareaid + "' limit 1;\n                 ";
+                        query = "SELECT \n                  id, \n                  dataareaid, \n                  salesid, \n                  custaccount, \n                  is_used, \n                  is_enabled,\n                  voucher_num, \n                  voucher_type, \n                  discount_percent, \n                  allowed_numbers, \n                  used_numbers, \n                  expiry_date,\n                  voucher_rules as \"voucherRules\"\n                  FROM public.discountvoucher\n                  WHERE voucher_num='" + code + "' and dataareaid = '" + dataareaid + "' limit 1;\n                 ";
                         return [4 /*yield*/, this.db.query(query)];
                     case 1:
                         data = _a.sent();

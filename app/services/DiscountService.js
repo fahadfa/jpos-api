@@ -280,8 +280,9 @@ var DiscountService = /** @class */ (function () {
                         vouchers = _b.sent();
                         if (!vouchers) return [3 /*break*/, 11];
                         if (vouchers.voucherRules) {
-                            console.log("========", vouchers.voucherRules);
+                            // console.log("========", vouchers.voucherRules);
                             voucherType = vouchers.voucherRules.discountType;
+                            voucherAmount = parseFloat(vouchers.voucherRules.discountAmount);
                         }
                         if (vouchers.voucher_type == "JUNE_SALES_VOUCHER_DISCOUNT") {
                             reqData.isOTPRequired = true;
@@ -569,6 +570,12 @@ var DiscountService = /** @class */ (function () {
                                         }
                                         if (!isValidVoucherItem) return [3 /*break*/, 21];
                                         isVoucherApplied = true;
+                                        //parseFloat(item.price) * item.quantity * (parseFloat(voucher.discount_percent) / 100)
+                                        if (voucherType == "amount") {
+                                            vouchers.voucherAmount = voucherAmount;
+                                            vouchers.voucherType = voucherType;
+                                            // console.log(vouchers);
+                                        }
                                         return [4 /*yield*/, this_1.calVoucherDiscount(item, reqData, vouchers)];
                                     case 20:
                                         _g.sent();
@@ -997,8 +1004,16 @@ var DiscountService = /** @class */ (function () {
     DiscountService.prototype.calVoucherDiscount = function (item, reqData, voucher) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                item.voucherdisc = parseFloat(voucher.discount_percent);
-                item.voucherdiscamt = parseFloat(item.price) * item.quantity * (parseFloat(voucher.discount_percent) / 100);
+                if (voucher.voucherType == "amount") {
+                    voucher.discount_percent = (parseFloat(item.price) * parseInt(item.quantity)) / parseFloat(reqData.grossTotal);
+                    item.voucherdisc = parseFloat(voucher.discount_percent);
+                    item.voucherdiscamt = voucher.voucherAmount * parseFloat(voucher.discount_percent);
+                }
+                else {
+                    item.voucherdisc = parseFloat(voucher.discount_percent);
+                    item.voucherdiscamt = parseFloat(item.price) * item.quantity * (parseFloat(voucher.discount_percent) / 100);
+                }
+                console.log(item.voucherdiscamt);
                 item.priceAfterdiscount =
                     (parseFloat(item.price) + parseFloat(item.colorantprice)) * item.quantity - parseFloat(item.voucherdiscamt);
                 item.lineamountafterdiscount = parseFloat(item.priceAfterdiscount);

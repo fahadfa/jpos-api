@@ -137,6 +137,7 @@ var DiscountService = /** @class */ (function () {
                         vatData = _b.sent();
                         _b.label = 10;
                     case 10:
+                        console.log("=====================", vatData);
                         reqData.vat = vatData ? vatData.vat : 15;
                         reqData.vat = parseFloat(reqData.vat);
                         return [4 /*yield*/, this.rawQuery.getDiscountBlockItems(checkCustomer.custgroup, checkCustomer.accountnum, reqData.inventLocationId)];
@@ -198,7 +199,7 @@ var DiscountService = /** @class */ (function () {
     };
     DiscountService.prototype.calDiscount = function (reqData, discountBlockItemsArray) {
         return __awaiter(this, void 0, void 0, function () {
-            var getDiscountsList, checkDiscounts, promotionalDiscountItems, buyOneGetOneDiscountItems, salesDiscountItems, discounts, isTotalDiscount, isLineDiscount, isMultiLineDiscount, isNoDiscount, totalPercentage, linePercentage, multilineDiscRanges, multilineQuantity, multiLineItemCode, multlineDiscItems, total, totalBeforeVat, grossTotal, vouchers, isValidVoucher, isVoucherApplied, voucherDiscountedItems, message, instantDiscountRanges, isInstantDiscount, instantDiscountExcludeItems, isCashDisc, voucherType, voucherAmount, inQueryStr_1, voucherDiscountedItem, _loop_1, this_1, _i, _a, item;
+            var getDiscountsList, checkDiscounts, promotionalDiscountItems, buyOneGetOneDiscountItems, salesDiscountItems, discounts, isTotalDiscount, isLineDiscount, isMultiLineDiscount, totalPercentage, linePercentage, multilineDiscRanges, multilineQuantity, multiLineItemCode, multlineDiscItems, total, totalBeforeVat, grossTotal, vouchers, isValidVoucher, isVoucherApplied, voucherDiscountedItems, message, instantDiscountRanges, isInstantDiscount, instantDiscountExcludeItems, isCashDisc, voucherType, voucherAmount, inQueryStr_1, voucherDiscountedItem, _loop_1, this_1, _i, _a, item;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0: return [4 /*yield*/, this.getDiscountsList(reqData)];
@@ -214,7 +215,6 @@ var DiscountService = /** @class */ (function () {
                         isTotalDiscount = discounts[0].enddisc && discounts[0].enddisc != "" ? true : false;
                         isLineDiscount = discounts[0].linedisc && discounts[0].linedisc != "" ? true : false;
                         isMultiLineDiscount = discounts[0].multilinedisc && discounts[0].multilinedisc != "" ? true : false;
-                        isNoDiscount = false;
                         return [4 /*yield*/, this.rawQuery.getTotalDiscPercentage(discounts[0].enddisc, reqData.currency, this.sessionInfo.dataareaid)];
                     case 2:
                         totalPercentage = _b.sent();
@@ -340,10 +340,11 @@ var DiscountService = /** @class */ (function () {
                         _b.label = 12;
                     case 12:
                         _loop_1 = function (item) {
-                            var isValidVoucherItem, instantDiscountPercent, isSalesDiscount, _i, instantDiscountRanges_1, data, multilinefilter, salesDiscount, condition, appliedDiscounts, freeQty, freeItem, promotionalDiscountAmount, buy_one_get_one, promotionalDiscountDetails, isPromotionDiscount, isBuyOneGetOneDiscount, buyOneGetOneDiscountDetails, selectedQuantity, parentQuantity, freeItems, _a, _b, _c, j, i, freeItems, _d, _e, _f, j, i, itemDiscount;
+                            var isNoDiscount, isValidVoucherItem, instantDiscountPercent, isSalesDiscount, _i, instantDiscountRanges_1, data, multilinefilter, salesDiscount, condition, appliedDiscounts, freeQty, freeItem, promotionalDiscountAmount, buy_one_get_one, promotionalDiscountDetails, isPromotionDiscount, isBuyOneGetOneDiscount, buyOneGetOneDiscountDetails, selectedQuantity, parentQuantity, freeItems, _a, _b, _c, j, i, freeItems, _d, _e, _f, j, i, itemDiscount;
                             return __generator(this, function (_g) {
                                 switch (_g.label) {
                                     case 0:
+                                        isNoDiscount = false;
                                         isValidVoucherItem = isValidVoucher;
                                         instantDiscountPercent = 0;
                                         isSalesDiscount = false;
@@ -377,6 +378,10 @@ var DiscountService = /** @class */ (function () {
                                         condition = "!item.isItemFree";
                                         condition = eval(condition);
                                         item.lineTotalDisc = 0;
+                                        console.log("isTotalDiscount", isTotalDiscount);
+                                        console.log("isMultiLineDiscount", isMultiLineDiscount);
+                                        console.log("isLineDiscount", isLineDiscount);
+                                        console.log("isSalesDiscount", isSalesDiscount);
                                         if (!condition) return [3 /*break*/, 43];
                                         appliedDiscounts = [];
                                         freeQty = 0;
@@ -619,7 +624,6 @@ var DiscountService = /** @class */ (function () {
                                         item.lineamountafterdiscount = parseFloat(item.priceAfterdiscount);
                                         item.vat = reqData.vat;
                                         item.vatamount = parseFloat(item.priceAfterdiscount) * (item.vat / 100);
-                                        console.log(item.priceAfterdiscount, item.vatamount);
                                         item.priceAfterVat = parseFloat(item.priceAfterdiscount) + parseFloat(item.vatamount);
                                         total += item.priceAfterVat;
                                         totalBeforeVat += parseFloat(item.lineamountafterdiscount);
@@ -760,6 +764,7 @@ var DiscountService = /** @class */ (function () {
                                             v.percentage = v.percentage ? parseFloat(v.percentage) : v.percentage;
                                         });
                                         item.appliedDiscounts = appliedDiscounts;
+                                        console.log("===========================", item.itemid, ":", item.vat, item.vatamount, item.priceAfterdiscount);
                                         _g.label = 43;
                                     case 43: return [2 /*return*/];
                                 }
@@ -809,6 +814,7 @@ var DiscountService = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             var enddisc, dummyData;
             return __generator(this, function (_a) {
+                console.log("totalDiscount");
                 enddisc = checkDiscounts.filter(function (v) { return v.itemid == item.itemid; });
                 dummyData = {};
                 dummyData.enddisc = "";
@@ -840,6 +846,7 @@ var DiscountService = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             var linedisc, dummyData;
             return __generator(this, function (_a) {
+                console.log("lineDiscount");
                 linedisc = checkDiscounts.filter(function (v) { return v.itemid == item.itemid; });
                 dummyData = {};
                 dummyData.linedisc = "";
@@ -868,6 +875,7 @@ var DiscountService = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             var productPrice;
             return __generator(this, function (_a) {
+                console.log("multiLineDiscount");
                 line.multilnPercent = line.multilnPercent ? parseFloat(line.multilnPercent) : 0;
                 line.multilndisc = parseFloat(line.price) * parseInt(line.quantity) * (parseFloat(line.multilnPercent) / 100);
                 productPrice = (parseFloat(line.price) + parseFloat(line.colorantprice)) * line.quantity;
@@ -884,6 +892,7 @@ var DiscountService = /** @class */ (function () {
     DiscountService.prototype.buyOneGetOneDiscount = function (item, reqData) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
+                console.log("buyOneGetOneDiscount");
                 item.priceAfterdiscount = parseFloat(item.priceAfterdiscount)
                     ? parseFloat(item.priceAfterdiscount) - parseFloat(item.buyOneGetOneDiscount)
                     : (parseFloat(item.price) + parseFloat(item.colorantprice)) * item.quantity -
@@ -898,6 +907,7 @@ var DiscountService = /** @class */ (function () {
     DiscountService.prototype.promotionalDiscount = function (item, reqData) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
+                console.log("promotionalDiscount");
                 item.priceAfterdiscount = parseFloat(item.priceAfterdiscount)
                     ? parseFloat(item.priceAfterdiscount) - item.promotionalDiscount
                     : (parseFloat(item.price) + parseFloat(item.colorantprice)) * item.quantity - item.promotionalDiscount;
@@ -1004,6 +1014,7 @@ var DiscountService = /** @class */ (function () {
     DiscountService.prototype.calVoucherDiscount = function (item, reqData, voucher) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
+                console.log("calVoucherDiscount");
                 if (voucher.voucherType == "amount") {
                     voucher.discount_percent = (parseFloat(item.price) * parseInt(item.quantity)) / parseFloat(reqData.grossTotal);
                     item.voucherdisc = parseFloat(voucher.discount_percent);
@@ -1031,6 +1042,7 @@ var DiscountService = /** @class */ (function () {
     DiscountService.prototype.calSalesDiscount = function (item, reqData, salesDiscount) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
+                console.log("calSalesDiscount");
                 item.salesdisc = parseFloat(salesDiscount.discount);
                 item.salesdiscamt = parseFloat(item.price) * item.quantity * (parseFloat(salesDiscount.discount) / 100);
                 item.priceAfterdiscount = item.priceAfterdiscount
@@ -1047,6 +1059,7 @@ var DiscountService = /** @class */ (function () {
     DiscountService.prototype.calInstantDiscount = function (reqData, item, discount) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
+                console.log("calInstantDiscount");
                 item.instantDisc = discount;
                 item.instantdiscamt = parseFloat(item.price) * item.quantity * (discount / 100);
                 item.priceAfterdiscount =
@@ -1130,6 +1143,7 @@ var DiscountService = /** @class */ (function () {
     DiscountService.prototype.noDiscount = function (item, reqData) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
+                console.log("noDiscount");
                 item.priceAfterdiscount = (parseFloat(item.price) + parseFloat(item.colorantprice)) * item.quantity;
                 item.lineamountafterdiscount = parseFloat(item.priceAfterdiscount);
                 item.vat = reqData.vat;

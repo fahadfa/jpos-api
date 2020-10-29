@@ -1473,6 +1473,7 @@ var ReturnOrderAmountService = /** @class */ (function () {
                                 ? parseFloat(prevReturnOrderEquals.redeemAmount)
                                 : 0;
                         }
+                        console.log("designerServiceAmount", returnData.designServiceRedeemAmount);
                         designServiceRedeemAmount = returnData.designServiceRedeemAmount;
                         // returnData.amount -= parseFloat(returnOrderData.amount);
                         // returnData.netAmount -= parseFloat(returnOrderData.netAmount);
@@ -1494,6 +1495,9 @@ var ReturnOrderAmountService = /** @class */ (function () {
                             else {
                                 returnNetAmount -= returnData.designServiceRedeemAmount;
                             }
+                        }
+                        else {
+                            returnData.designServiceRedeemAmount = 0;
                         }
                         if (returnNetAmount > 0) {
                             redeemAmount = returnNetAmount;

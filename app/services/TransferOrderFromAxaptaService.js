@@ -77,22 +77,26 @@ var TransferOrderFromAxaptaService = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 5, , 6]);
+                        _a.trys.push([0, 8, , 9]);
                         return [4 /*yield*/, this.getTransferOrder(transferID)];
                     case 1:
                         axaptaData = _a.sent();
                         console.log("data-----------------", axaptaData);
-                        axaptaData.invent_location_id_to.trim();
-                        if (!(axaptaData.invent_location_id_to.trim() == this.sessionInfo.inventlocationid)) return [3 /*break*/, 3];
+                        return [4 /*yield*/, this.checkTransferOrder(axaptaData)];
+                    case 2:
+                        if (!_a.sent()) return [3 /*break*/, 6];
+                        if (!(axaptaData.invent_location_id_to.trim() == this.sessionInfo.inventlocationid)) return [3 /*break*/, 4];
                         return [4 /*yield*/, this.mapSalesData(axaptaData)];
-                    case 2: return [2 /*return*/, _a.sent()];
-                    case 3: throw { message: "INVOICE_ID_NOT_RELATED_TO_THIS_STORE" };
-                    case 4: return [3 /*break*/, 6];
-                    case 5:
+                    case 3: return [2 /*return*/, _a.sent()];
+                    case 4: throw { message: "INVOICE_ID_NOT_RELATED_TO_THIS_STORE" };
+                    case 5: return [3 /*break*/, 7];
+                    case 6: throw { message: "cant receive order from test participating stores" };
+                    case 7: return [3 /*break*/, 9];
+                    case 8:
                         error_1 = _a.sent();
                         Log_1.log.error(error_1);
                         throw error_1;
-                    case 6: return [2 /*return*/];
+                    case 9: return [2 /*return*/];
                 }
             });
         });
@@ -595,6 +599,26 @@ var TransferOrderFromAxaptaService = /** @class */ (function () {
                         throw { status: 0, message: error_6 };
                     case 3: return [2 /*return*/];
                 }
+            });
+        });
+    };
+    TransferOrderFromAxaptaService.prototype.checkTransferOrder = function (data) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                if (process.env.ENV_STORE_ID && process.env.ENV_STORE_ID != "") {
+                    console.log(Props_1.Props.testStoreIds);
+                    console.log(Props_1.Props.testStoreIds.includes(data.invent_location_id_from));
+                    if (Props_1.Props.testStoreIds.includes(data.invent_location_id_from)) {
+                        return [2 /*return*/, false];
+                    }
+                    else {
+                        return [2 /*return*/, true];
+                    }
+                }
+                else {
+                    return [2 /*return*/, true];
+                }
+                return [2 /*return*/];
             });
         });
     };

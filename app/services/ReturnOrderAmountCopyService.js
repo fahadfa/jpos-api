@@ -435,7 +435,14 @@ var ReturnOrderAmountService = /** @class */ (function () {
                         for (_i = 0, _a = reqData.salesLine; _i < _a.length; _i++) {
                             item = _a[_i];
                             sabicCustomers = item.appliedDiscounts.find(function (v) { return v.discountType == "SABIC_CUSTOMER_DISCOUNT"; });
+                            if (sabicCustomers) {
+                                break;
+                            }
                             INTERIOR_AND_EXTERIOR = item.appliedDiscounts.find(function (v) { return v.discountType == "INTERIOR_AND_EXTERIOR"; });
+                            if (INTERIOR_AND_EXTERIOR) {
+                                console.log(INTERIOR_AND_EXTERIOR);
+                                break;
+                            }
                             if (sabicCustomers) {
                                 sabicCustomers = true;
                             }

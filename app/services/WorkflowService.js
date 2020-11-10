@@ -41,6 +41,9 @@ var WorkflowDAO_1 = require("../repos/WorkflowDAO");
 var Props_1 = require("../../constants/Props");
 var RawQuery_1 = require("../common/RawQuery");
 var SalesTableDAO_1 = require("../repos/SalesTableDAO");
+var Workflow_1 = require("../../entities/Workflow");
+var SalesTable_1 = require("../../entities/SalesTable");
+var SelectedLines_1 = require("../../entities/SelectedLines");
 var UsergroupconfigDAO_1 = require("../repos/UsergroupconfigDAO");
 var UpdateInventoryService_1 = require("../services/UpdateInventoryService");
 var InventtransService_1 = require("../services/InventtransService");
@@ -108,6 +111,7 @@ var WorkflowService = /** @class */ (function () {
                             // item.inventoryTypeAr = item.SalesTable.movementType.movementArabic;
                             item.inventoryType = item.SalesTable ? item.SalesTable.movementType : null;
                             item.inventoryTypeAr = item.SalesTable ? item.SalesTable.movementType : null;
+                            item.selectedLines = item.selectedLines ? item.selectedLines.lines : null;
                             delete item.SalesTable;
                         });
                         return [2 /*return*/, data];
@@ -122,7 +126,7 @@ var WorkflowService = /** @class */ (function () {
     WorkflowService.prototype.save = function (item, type) {
         if (type === void 0) { type = null; }
         return __awaiter(this, void 0, void 0, function () {
-            var queryRunner, status_1, promistList, condition, usergroupid, salesData, RM_AND_RA, canSendForApproval, transactions, date, inventtransQuery, _i, transactions_1, v, salesSaveData, error_3;
+            var queryRunner, status_1, promistList, condition, usergroupid, selectedLinesData, salesData, RM_AND_RA, canSendForApproval, transactions, date, inventtransQuery, _i, transactions_1, v, selectedLines, salesSaveData, error_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -135,14 +139,15 @@ var WorkflowService = /** @class */ (function () {
                         _a.sent();
                         _a.label = 3;
                     case 3:
-                        _a.trys.push([3, 30, 32, 34]);
+                        _a.trys.push([3, 34, 36, 38]);
                         status_1 = item.status;
                         promistList = [];
                         return [4 /*yield*/, this.rawQuery.workflowconditions(this.sessionInfo.usergroupconfigid)];
                     case 4:
                         condition = _a.sent();
                         usergroupid = this.sessionInfo.groupid;
-                        if (!(item.id || item.orderId)) return [3 /*break*/, 28];
+                        selectedLinesData = null;
+                        if (!(item.id || item.orderId)) return [3 /*break*/, 32];
                         if (!item.id) return [3 /*break*/, 6];
                         return [4 /*yield*/, this.workflowDAO.entity(item.id)];
                     case 5:
@@ -160,7 +165,7 @@ var WorkflowService = /** @class */ (function () {
                         return [4 /*yield*/, this.rawQuery.getRmAndRa(usergroupid)];
                     case 8:
                         RM_AND_RA = _a.sent();
-                        if (!(type == "sendforapproval")) return [3 /*break*/, 23];
+                        if (!(type == "sendforapproval")) return [3 /*break*/, 24];
                         return [4 /*yield*/, this.allocateData(item, salesData)];
                     case 9:
                         _a.sent();
@@ -261,8 +266,17 @@ var WorkflowService = /** @class */ (function () {
                         item.orderType = Props_1.Props.WORKFLOW_ORDER_TYPE[salesData.transkind][0];
                         item.inventLocationId = this.sessionInfo.inventlocationid;
                         this.inventtransService.sessionInfo = this.sessionInfo;
-                        return [3 /*break*/, 24];
+                        return [4 /*yield*/, this.inventtransService.getSelectedBatches({
+                                salesid: salesData.salesId,
+                                type: salesData.transkind,
+                            })];
                     case 23:
+                        selectedLines = _a.sent();
+                        selectedLinesData = {
+                            lines: selectedLines,
+                        };
+                        return [3 /*break*/, 25];
+                    case 24:
                         // console.log(item.statusId);
                         if (status_1 == "accept" || status_1 == null) {
                             if (salesData.transkind == "RETURNORDER") {
@@ -349,42 +363,54 @@ var WorkflowService = /** @class */ (function () {
                             item.pendingWith = null;
                             // await this.inventryTransUpdate(salesData);
                         }
-                        _a.label = 24;
-                    case 24:
+                        _a.label = 25;
+                    case 25:
                         item.lastModifiedBy = this.sessionInfo.userName;
                         // console.log(new Date());
                         item.lastModifiedDate = new Date(App_1.App.DateNow());
                         return [4 /*yield*/, this.validate(item)];
-                    case 25:
+                    case 26:
                         _a.sent();
                         salesSaveData = {};
                         salesSaveData.salesId = item.orderId;
                         salesSaveData.status = item.statusId;
                         salesSaveData.lastModifiedDate = new Date(App_1.App.DateNow());
                         console.log("lastModifiedDate", salesSaveData.lastModifiedDate, salesSaveData.status);
-                        promistList.push(this.workflowDAO.save(item), this.salesTableDAO.save(salesSaveData));
-                        // let salesTableData: any = await this.salesTableDAO.save(salesData);
-                        return [4 /*yield*/, Promise.all(promistList)];
-                    case 26:
-                        // let salesTableData: any = await this.salesTableDAO.save(salesData);
-                        _a.sent();
-                        return [4 /*yield*/, queryRunner.commitTransaction()];
+                        // promistList.push(this.workflowDAO.save(item), this.salesTableDAO.save(salesSaveData));
+                        return [4 /*yield*/, queryRunner.manager.getRepository(Workflow_1.Workflow).save(item)];
                     case 27:
+                        // promistList.push(this.workflowDAO.save(item), this.salesTableDAO.save(salesSaveData));
+                        _a.sent();
+                        if (!selectedLinesData) return [3 /*break*/, 29];
+                        selectedLinesData.id = item.id;
+                        selectedLinesData.updatedOn = new Date(App_1.App.DateNow());
+                        selectedLinesData.createdOn = new Date(App_1.App.DateNow());
+                        return [4 /*yield*/, queryRunner.manager.getRepository(SelectedLines_1.SelectedLines).save(selectedLinesData)];
+                    case 28:
+                        _a.sent();
+                        _a.label = 29;
+                    case 29: return [4 /*yield*/, queryRunner.manager.getRepository(SalesTable_1.SalesTable).save(salesSaveData)];
+                    case 30:
+                        _a.sent();
+                        // let salesTableData: any = await this.salesTableDAO.save(salesData);
+                        return [4 /*yield*/, queryRunner.commitTransaction()];
+                    case 31:
+                        // let salesTableData: any = await this.salesTableDAO.save(salesData);
                         _a.sent();
                         return [2 /*return*/, { id: item.id, status: item.statusId, message: "SAVED_SUCCESSFULLY" }];
-                    case 28: throw { message: "INVALID_DATA" };
-                    case 29: return [3 /*break*/, 34];
-                    case 30:
+                    case 32: throw { message: "INVALID_DATA" };
+                    case 33: return [3 /*break*/, 38];
+                    case 34:
                         error_3 = _a.sent();
                         return [4 /*yield*/, queryRunner.rollbackTransaction()];
-                    case 31:
+                    case 35:
                         _a.sent();
                         throw error_3;
-                    case 32: return [4 /*yield*/, queryRunner.release()];
-                    case 33:
+                    case 36: return [4 /*yield*/, queryRunner.release()];
+                    case 37:
                         _a.sent();
                         return [7 /*endfinally*/];
-                    case 34: return [2 /*return*/];
+                    case 38: return [2 /*return*/];
                 }
             });
         });

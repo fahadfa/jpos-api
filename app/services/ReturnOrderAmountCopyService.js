@@ -1263,6 +1263,7 @@ var ReturnOrderAmountService = /** @class */ (function () {
                                                 v.linkId == item.linkId &&
                                                 v.isItemFree == item.isItemFree;
                                         });
+                                        console.log(item.id, returnOrderData.salesLine[0].id);
                                         salesOrderLine = returnOrderData.salesLine.find(function (v) {
                                             return v.itemid == item.itemid &&
                                                 v.inventsizeid == item.inventsizeid &&
@@ -1270,7 +1271,8 @@ var ReturnOrderAmountService = /** @class */ (function () {
                                                 v.colorantId == item.colorantId &&
                                                 v.linkId == item.linkId &&
                                                 v.isItemFree == item.isItemFree &&
-                                                (v.addedBatch == true || v.isParent == true);
+                                                (v.addedBatch == true || v.isParent == true) &&
+                                                v.id == item.id;
                                         });
                                         // console.log(salesOrderLine)
                                         if (salesOrderLine) {

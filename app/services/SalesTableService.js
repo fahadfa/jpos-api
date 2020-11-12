@@ -96,32 +96,46 @@ var SalesTableService = /** @class */ (function () {
     SalesTableService.prototype.entity = function (id, type) {
         if (type === void 0) { type = null; }
         return __awaiter(this, void 0, void 0, function () {
-            var data, promiseList, condition, sabicCustomers, salesLine, _i, salesLine_1, item, baseSizeBatchesList_1, error_1;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            var data, promiseList, _a, condition, sabicCustomers, salesLine, _i, salesLine_1, item, baseSizeBatchesList_1, error_1;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
-                        _a.trys.push([0, 11, , 12]);
+                        _b.trys.push([0, 15, , 16]);
                         return [4 /*yield*/, this.salestableDAO.entity(id.toUpperCase())];
                     case 1:
-                        data = _a.sent();
+                        data = _b.sent();
                         if (!data) {
                             throw { message: "ORDER_NOT_FOUND" };
                         }
                         return [4 /*yield*/, this.calData(data)];
                     case 2:
-                        _a.sent();
-                        promiseList = [
-                            this.getcustomer(data),
-                            this.getpainter(data),
-                            this.getsalesman(data),
-                            this.workflowstatus(data),
-                        ];
-                        return [4 /*yield*/, this.rawQuery.workflowconditions(this.sessionInfo.usergroupconfigid)];
+                        _b.sent();
+                        return [4 /*yield*/, this.getcustomer(data)];
                     case 3:
-                        condition = _a.sent();
-                        return [4 /*yield*/, Promise.all(promiseList)];
+                        _a = [
+                            _b.sent()
+                        ];
+                        return [4 /*yield*/, this.getpainter(data)];
                     case 4:
-                        _a.sent();
+                        _a = _a.concat([
+                            _b.sent()
+                        ]);
+                        return [4 /*yield*/, this.getsalesman(data)];
+                    case 5:
+                        _a = _a.concat([
+                            _b.sent()
+                        ]);
+                        return [4 /*yield*/, this.workflowstatus(data)];
+                    case 6:
+                        promiseList = _a.concat([
+                            _b.sent()
+                        ]);
+                        return [4 /*yield*/, this.rawQuery.workflowconditions(this.sessionInfo.usergroupconfigid)];
+                    case 7:
+                        condition = _b.sent();
+                        return [4 /*yield*/, Promise.all(promiseList)];
+                    case 8:
+                        _b.sent();
                         data.custAccount = data.custAccount ? data.custAccount.trim() : null;
                         data.customer = data.customer ? data.customer : {};
                         data.painter = data.painter ? data.painter : {};
@@ -174,8 +188,8 @@ var SalesTableService = /** @class */ (function () {
                         data.movementType = data.movementType ? data.movementType : {};
                         salesLine = data.salesLine;
                         return [4 /*yield*/, this.allocateSalesLineData(salesLine)];
-                    case 5:
-                        _a.sent();
+                    case 9:
+                        _b.sent();
                         salesLine.sort(function (a, b) {
                             var lineA = a.lineNum, lineB = b.lineNum;
                             if (lineA < lineB)
@@ -186,9 +200,9 @@ var SalesTableService = /** @class */ (function () {
                             return 0; //default return value (no sorting)
                         });
                         _i = 0, salesLine_1 = salesLine;
-                        _a.label = 6;
-                    case 6:
-                        if (!(_i < salesLine_1.length)) return [3 /*break*/, 9];
+                        _b.label = 10;
+                    case 10:
+                        if (!(_i < salesLine_1.length)) return [3 /*break*/, 13];
                         item = salesLine_1[_i];
                         item.product = item.size ? item.size.product : {};
                         item.size = item.size ? item.size : {};
@@ -197,17 +211,17 @@ var SalesTableService = /** @class */ (function () {
                             (data.transkind == "SALESORDER" && data.status == "SAVED") ||
                             (data.transkind == "ORDERSHIPMENT" &&
                                 data.status != "POSTED" &&
-                                data.inventLocationId == this.sessionInfo.inventlocationid))) return [3 /*break*/, 8];
+                                data.inventLocationId == this.sessionInfo.inventlocationid))) return [3 /*break*/, 12];
                         return [4 /*yield*/, this.inventoryOnHandCheck(item, data.transkind, data.custAccount)];
-                    case 7:
-                        _a.sent();
-                        _a.label = 8;
-                    case 8:
+                    case 11:
+                        _b.sent();
+                        _b.label = 12;
+                    case 12:
                         _i++;
-                        return [3 /*break*/, 6];
-                    case 9: return [4 /*yield*/, this.rawQuery.getBaseSizeBatchesList(id)];
-                    case 10:
-                        baseSizeBatchesList_1 = _a.sent();
+                        return [3 /*break*/, 10];
+                    case 13: return [4 /*yield*/, this.rawQuery.getBaseSizeBatchesList(id)];
+                    case 14:
+                        baseSizeBatchesList_1 = _b.sent();
                         console.log(baseSizeBatchesList_1);
                         if (data.transkind == "SALESORDER" ||
                             data.transkind == "TRANSFERORDER" ||
@@ -232,10 +246,10 @@ var SalesTableService = /** @class */ (function () {
                             data.salesLine = salesLine;
                         }
                         return [2 /*return*/, data];
-                    case 11:
-                        error_1 = _a.sent();
+                    case 15:
+                        error_1 = _b.sent();
                         throw error_1;
-                    case 12: return [2 /*return*/];
+                    case 16: return [2 /*return*/];
                 }
             });
         });

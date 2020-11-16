@@ -88,9 +88,9 @@ var TransferOrderFromAxaptaService = /** @class */ (function () {
                         if (!(axaptaData.invent_location_id_to.trim() == this.sessionInfo.inventlocationid)) return [3 /*break*/, 4];
                         return [4 /*yield*/, this.mapSalesData(axaptaData)];
                     case 3: return [2 /*return*/, _a.sent()];
-                    case 4: throw { message: "INVOICE_ID_NOT_RELATED_TO_THIS_STORE" };
+                    case 4: throw { status: 0, message: "INVOICE_ID_NOT_RELATED_TO_THIS_STORE" };
                     case 5: return [3 /*break*/, 7];
-                    case 6: throw { message: "cant receive order from test participating stores" };
+                    case 6: throw { status: 0, message: "cant receive order from test participating stores" };
                     case 7: return [3 /*break*/, 9];
                     case 8:
                         error_1 = _a.sent();
@@ -207,7 +207,7 @@ var TransferOrderFromAxaptaService = /** @class */ (function () {
                     case 4:
                         prevSalesData = _a.sent();
                         if (!prevSalesData) return [3 /*break*/, 5];
-                        throw { message: "ALREADY_RECEIVED" };
+                        throw { status: 0, message: "ALREADY_RECEIVED" };
                     case 5: return [4 /*yield*/, this.usergroupconfigDAO.findOne({
                             groupid: this.sessionInfo.groupid,
                         })];
@@ -394,12 +394,12 @@ var TransferOrderFromAxaptaService = /** @class */ (function () {
                     case 29:
                         _b.sent();
                         return [2 /*return*/, salesId];
-                    case 30: throw { message: "CANNOT_FIND_SEQUENCE_FORMAT_FROM_NUMBER_SEQUENCE_TABLE" };
+                    case 30: throw { status: 0, message: "CANNOT_FIND_SEQUENCE_FORMAT_FROM_NUMBER_SEQUENCE_TABLE" };
                     case 31: return [3 /*break*/, 33];
                     case 32:
                         error_4 = _b.sent();
                         if (error_4 == {}) {
-                            error_4 = { message: "SERVER_SIDE_ERROR" };
+                            error_4 = { status: 0, message: "SERVER_SIDE_ERROR" };
                         }
                         throw error_4;
                     case 33: return [2 /*return*/];

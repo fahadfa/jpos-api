@@ -240,9 +240,9 @@ var TransferOrderFromAxaptaService = /** @class */ (function () {
                         salesLines = data.salesLines;
                         delete salesData.salesLines;
                         // await this.salesTableDAO.save(salesData);
+                        salesData.linesCount = salesLines.length;
                         return [4 /*yield*/, queryRunner.manager.getRepository(SalesTable_1.SalesTable).save(salesData)];
                     case 11:
-                        // await this.salesTableDAO.save(salesData);
                         _a.sent();
                         _i = 0, salesLines_1 = salesLines;
                         _a.label = 12;

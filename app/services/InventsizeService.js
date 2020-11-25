@@ -184,7 +184,7 @@ var InventsizeService = /** @class */ (function () {
                         getCustomer = getCustomer ? getCustomer : {};
                         defaultcustomer = getCustomers.find(function (v) { return v.accountnum == _this.sessionInfo.defaultcustomerid; });
                         defaultcustomer = defaultcustomer ? defaultcustomer : {};
-                        if (getCustomer.walkincustomer == true) {
+                        if (getCustomer.walkincustomer == true || getCustomer == {}) {
                             reqData.custaccount = this.sessionInfo.defaultcustomerid;
                         }
                         if (!reqData.pricegroup) {

@@ -1700,19 +1700,24 @@ var SalesTableService = /** @class */ (function () {
                                     case 2:
                                         similarLines = _a.sent();
                                         availability = parseInt(availability);
+                                        console.log(availability);
                                         similarLines.map(function (d) {
+                                            console.log(d.batches);
                                             d.batches.map(function (b) {
+                                                console.log(b.batchNo, batch.batchNo);
                                                 if (b.batchNo == batch.batchNo) {
-                                                    availability -= parseInt(batch.quantity);
+                                                    console.log(b.quantity);
+                                                    availability -= parseInt(b.quantity);
                                                 }
                                             });
                                         });
+                                        console.log("==========================================", availability, batch.quantity);
                                         if (!(availability <= 0 || availability < Math.abs(batch.quantity))) return [3 /*break*/, 4];
+                                        console.log("======================mission pass====================", availability);
                                         return [4 /*yield*/, this_1.dofifo(item, batch.quantity, reqData, salesLine)];
                                     case 3:
                                         fiofoBatches = _a.sent();
                                         batches = batches.concat(fiofoBatches);
-                                        console.log(batches);
                                         return [3 /*break*/, 5];
                                     case 4:
                                         batch.itemid = item.itemid;
@@ -1758,15 +1763,14 @@ var SalesTableService = /** @class */ (function () {
                     case 10:
                         item.batchesAdded = true;
                         uniqueList = [];
-                        groupBatchesList = this.groupBy(batches, function (item) {
-                            return [item.itemid, item.batchno, item.configid, item.inventsizeid, item.quantity];
+                        groupBatchesList = this.groupBy(batches, function (d) {
+                            return [d.itemid, d.batchno, d.configid, d.inventsizeid, d.quantity];
                         });
                         groupBatchesList.map(function (v) {
                             uniqueList.push(v[0]);
                         });
-                        qty = uniqueList.reduce(function (res, item) { return res + parseInt(item.quantity); }, 0);
-                        console.log("qty", qty, item.salesQty, uniqueList);
-                        console.log(uniqueList);
+                        qty = uniqueList.reduce(function (res, i) { return res + parseInt(i.quantity); }, 0);
+                        console.log("qty", qty, item.salesQty);
                         if (reqData.status == "PAID" || reqData.status == "RESERVED") {
                             if (parseInt(item.salesQty) != qty) {
                                 throw {
@@ -2172,7 +2176,7 @@ var SalesTableService = /** @class */ (function () {
                             });
                         }
                         if (!(reqData.status == "PAID" && salestatus.status != "RESERVED")) return [3 /*break*/, 8];
-                        saleslineArray = salesLine_7.slice();
+                        saleslineArray = JSON.parse(JSON.stringify(salesLine_7));
                         return [4 /*yield*/, this.stockOnHandCheck(saleslineArray, reqData)];
                     case 7:
                         _b.sent();
@@ -3342,7 +3346,6 @@ var SalesTableService = /** @class */ (function () {
                                 v.batchesAdded == true;
                         });
                         val_1 = parseInt(qty);
-                        console.log("quantity", val_1, similarLines);
                         batchList = [];
                         _loop_6 = function (batch) {
                             batch.availabilty = parseInt(batch.availabilty);
@@ -3360,7 +3363,7 @@ var SalesTableService = /** @class */ (function () {
                                     }
                                 });
                             }
-                            console.log(batch.availabilty);
+                            // console.log(batch.availabilty);
                             if (val_1 > 0) {
                                 if (parseInt(batch.availabilty) >= val_1) {
                                     batch.quantity = val_1;

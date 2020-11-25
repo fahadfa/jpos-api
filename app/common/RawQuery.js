@@ -78,7 +78,7 @@ var RawQuery = /** @class */ (function () {
                         if (accountnum2) {
                             query += ", '" + accountnum2 + "'";
                         }
-                        query += ") LIMIT 1";
+                        query += ") ";
                         return [4 /*yield*/, this.db.query(query)];
                     case 1:
                         data = _a.sent();

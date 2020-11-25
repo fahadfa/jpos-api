@@ -1691,30 +1691,30 @@ var SalesTableService = /** @class */ (function () {
                                             })];
                                     case 1:
                                         availability = _a.sent();
-                                        similarLines = salesLine.filter(function (v) {
-                                            return v.itemId == item.itemId &&
-                                                v.configId == item.configId &&
-                                                v.inventsizeid == item.inventsizeid &&
-                                                v.batchesAdded == true;
-                                        });
+                                        return [4 /*yield*/, salesLine.filter(function (d) {
+                                                return d.itemid == item.itemid &&
+                                                    d.configId == item.configId &&
+                                                    d.inventsizeid == item.inventsizeid &&
+                                                    d.batchesAdded == true;
+                                            })];
+                                    case 2:
+                                        similarLines = _a.sent();
                                         availability = parseInt(availability);
-                                        similarLines.map(function (v) {
-                                            v.batches.map(function (v) {
-                                                if (v.batchNo == batch.batchNo) {
+                                        similarLines.map(function (d) {
+                                            d.batches.map(function (b) {
+                                                if (b.batchNo == batch.batchNo) {
                                                     availability -= parseInt(batch.quantity);
                                                 }
                                             });
                                         });
-                                        console.log("==========================================", similarLines, availability);
-                                        if (!(availability <= 0 || availability < Math.abs(batch.quantity))) return [3 /*break*/, 3];
-                                        console.log("======================mission pass====================", availability);
+                                        if (!(availability <= 0 || availability < Math.abs(batch.quantity))) return [3 /*break*/, 4];
                                         return [4 /*yield*/, this_1.dofifo(item, batch.quantity, reqData, salesLine)];
-                                    case 2:
+                                    case 3:
                                         fiofoBatches = _a.sent();
                                         batches = batches.concat(fiofoBatches);
                                         console.log(batches);
-                                        return [3 /*break*/, 4];
-                                    case 3:
+                                        return [3 /*break*/, 5];
+                                    case 4:
                                         batch.itemid = item.itemid;
                                         batch.transrefid = item.salesId;
                                         batch.invoiceid = item.salesId;
@@ -1731,8 +1731,8 @@ var SalesTableService = /** @class */ (function () {
                                         batch.salesLineId = item.id;
                                         batch.dateinvent = new Date(App_1.App.DateNow());
                                         batches.push(batch);
-                                        _a.label = 4;
-                                    case 4: return [2 /*return*/];
+                                        _a.label = 5;
+                                    case 5: return [2 /*return*/];
                                 }
                             });
                         };
@@ -1765,7 +1765,7 @@ var SalesTableService = /** @class */ (function () {
                             uniqueList.push(v[0]);
                         });
                         qty = uniqueList.reduce(function (res, item) { return res + parseInt(item.quantity); }, 0);
-                        console.log("qty", qty, item.salesQty);
+                        console.log("qty", qty, item.salesQty, uniqueList);
                         console.log(uniqueList);
                         if (reqData.status == "PAID" || reqData.status == "RESERVED") {
                             if (parseInt(item.salesQty) != qty) {

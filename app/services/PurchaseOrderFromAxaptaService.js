@@ -415,6 +415,9 @@ var PurchaseOrderFromAxaptaService = /** @class */ (function () {
                             // line.batches = batches;
                             salesLine.push(line);
                         });
+                        return [4 /*yield*/, App_1.App.getItemNamesInSalesLines(salesLine, this.inventtableDAO)];
+                    case 2:
+                        _a.sent();
                         salesData.salesLine = salesLine;
                         return [2 /*return*/, salesData];
                 }

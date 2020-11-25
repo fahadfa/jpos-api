@@ -1647,7 +1647,7 @@ var SalesTableService = /** @class */ (function () {
     };
     SalesTableService.prototype.salesLineItemOrder = function (item, reqData, queryRunner, salesLine) {
         return __awaiter(this, void 0, void 0, function () {
-            var batches, taxItemGroup, _loop_2, this_1, _i, _a, batch, fiofoBatches, _b, batches_3, batch;
+            var batches, taxItemGroup, _loop_2, this_1, _i, _a, batch, fiofoBatches, uniqueList, groupBatchesList, qty, _b, batches_3, batch;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
@@ -1757,6 +1757,24 @@ var SalesTableService = /** @class */ (function () {
                         _c.label = 10;
                     case 10:
                         item.batchesAdded = true;
+                        uniqueList = [];
+                        groupBatchesList = this.groupBy(batches, function (item) {
+                            return [item.itemid, item.batchno, item.configid, item.inventsizeid, item.quantity];
+                        });
+                        groupBatchesList.map(function (v) {
+                            uniqueList.push(v[0]);
+                        });
+                        qty = uniqueList.reduce(function (res, item) { return res + parseInt(item.quantity); }, 0);
+                        console.log("qty", qty, item.salesQty);
+                        console.log(uniqueList);
+                        if (reqData.status == "PAID" || reqData.status == "RESERVED") {
+                            if (parseInt(item.salesQty) != qty) {
+                                throw {
+                                    id: reqData.salesId,
+                                    message: "inventory not available - " + item.itemid + " - " + item.configId + " - " + item.inventsizeid + " - please edit and try again",
+                                };
+                            }
+                        }
                         _b = 0, batches_3 = batches;
                         _c.label = 11;
                     case 11:

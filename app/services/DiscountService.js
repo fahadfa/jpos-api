@@ -404,7 +404,7 @@ var DiscountService = /** @class */ (function () {
                                             }
                                         }
                                         selectedQuantity = reqData.selectedItems
-                                            .filter(function (v) { return v.itemid == v.itemid && v.inventsizeid == v.inventsizeid; })
+                                            .filter(function (v) { return v.itemid == item.itemid && v.inventsizeid == item.inventsizeid; })
                                             .reduce(function (res, item) { return res + parseInt(item.quantity); }, 0);
                                         parentQuantity = Math.max.apply(Math, reqData.selectedItems
                                             .filter(function (v) { return v.linkId == item.linkId && v.isItemFree == false; })

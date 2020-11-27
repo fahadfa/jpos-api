@@ -414,6 +414,7 @@ var ReturnOrderAmountService = /** @class */ (function () {
                             if (v.appliedDiscounts) {
                                 var instantData = v.appliedDiscounts.find(function (v) { return v.discountType == "INSTANT_DISCOUNT"; });
                                 if (instantData) {
+                                    reqData.instantDiscChecked = true;
                                     reqData.instantDiscGrossTotal += parseFloat(v.salesprice) * parseFloat(v.salesQty);
                                 }
                             }

@@ -245,6 +245,7 @@ var SalesTableService = /** @class */ (function () {
                             delete data.salesLine;
                             data.salesLine = salesLine;
                         }
+                        console.log("======================================================", data.painter);
                         return [2 /*return*/, data];
                     case 15:
                         error_1 = _b.sent();
@@ -295,8 +296,7 @@ var SalesTableService = /** @class */ (function () {
                         _a = data;
                         return [4 /*yield*/, this.rawQuery.salesman(data.salesmanId)];
                     case 1:
-                        _a.painter = _b.sent();
-                        data.painter = data.painter ? data.painter : {};
+                        _a.salesmanId = _b.sent();
                         return [2 /*return*/];
                 }
             });

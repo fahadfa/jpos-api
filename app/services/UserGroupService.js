@@ -42,6 +42,8 @@ var typeorm_1 = require("typeorm");
 var RawQuery_1 = require("../common/RawQuery");
 var UsergroupconfigDAO_1 = require("../repos/UsergroupconfigDAO");
 var UsergroupConfigService_1 = require("./UsergroupConfigService");
+var HistoryUsergroupConfigService_1 = require("./HistoryUsergroupConfigService");
+var HistoryUserGroupService_1 = require("./HistoryUserGroupService");
 var uuid = require("uuid");
 var UserGroupService = /** @class */ (function () {
     function UserGroupService() {
@@ -50,6 +52,8 @@ var UserGroupService = /** @class */ (function () {
         this.userInfo = new UserInfo_1.UserInfo();
         this.rawQuery = new RawQuery_1.RawQuery();
         this.userGroupConfigService = new UsergroupConfigService_1.UsergroupConfigService();
+        this.historyUserGroupConfigService = new HistoryUsergroupConfigService_1.HistoryUsergroupConfigService();
+        this.historyUserGroupService = new HistoryUserGroupService_1.HistoryUserGroupService();
         this.userGroupConfigDAO = new UsergroupconfigDAO_1.UsergroupconfigDAO();
         this.userGroupConfigService.sessionInfo = this.sessionInfo;
     }
@@ -117,31 +121,34 @@ var UserGroupService = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 4, , 5]);
+                        _a.trys.push([0, 5, , 6]);
                         return [4 /*yield*/, this.validate(reqData)];
                     case 1:
                         cond = _a.sent();
                         console.log(cond);
                         reqData.permissiondata = JSON.stringify(reqData.permissiondata);
-                        if (!(cond == true)) return [3 /*break*/, 3];
+                        if (!(cond == true)) return [3 /*break*/, 4];
                         reqData.lastmodifieddate = new Date(App_1.App.DateNow());
                         return [4 /*yield*/, this.usergroupDAO.save(reqData)];
                     case 2:
                         user = _a.sent();
-                        returnData = { id: reqData.groupid, message: 'SAVED_SUCCESSFULLY' };
-                        return [2 /*return*/, returnData];
+                        return [4 /*yield*/, this.historyUserGroupService.save(reqData)];
                     case 3:
+                        _a.sent();
+                        returnData = { id: reqData.groupid, message: "SAVED_SUCCESSFULLY" };
+                        return [2 /*return*/, returnData];
+                    case 4:
                         if (cond == "groupname") {
-                            throw { message: 'RECORD_ALREADY_EXISTS' };
+                            throw { message: "RECORD_ALREADY_EXISTS" };
                         }
                         else {
-                            throw { message: 'INVALID_DATA' };
+                            throw { message: "INVALID_DATA" };
                         }
-                        return [3 /*break*/, 5];
-                    case 4:
+                        return [3 /*break*/, 6];
+                    case 5:
                         error_3 = _a.sent();
                         throw error_3;
-                    case 5: return [2 /*return*/];
+                    case 6: return [2 /*return*/];
                 }
             });
         });
@@ -178,7 +185,7 @@ var UserGroupService = /** @class */ (function () {
                         return [4 /*yield*/, this.usergroupDAO.findAll({ groupname: item.groupname })];
                     case 5:
                         mdata = _a.sent();
-                        if (!!item.groupid) return [3 /*break*/, 9];
+                        if (!!item.groupid) return [3 /*break*/, 10];
                         if (!(mdata.length > 0)) return [3 /*break*/, 6];
                         return [2 /*return*/, "groupname"];
                     case 6:
@@ -192,9 +199,12 @@ var UserGroupService = /** @class */ (function () {
                         return [4 /*yield*/, this.userGroupConfigDAO.save(userGroupData)];
                     case 7:
                         _a.sent();
-                        _a.label = 8;
-                    case 8: return [3 /*break*/, 10];
-                    case 9:
+                        return [4 /*yield*/, this.historyUserGroupConfigService.save(userGroupData)];
+                    case 8:
+                        _a.sent();
+                        _a.label = 9;
+                    case 9: return [3 /*break*/, 11];
+                    case 10:
                         console.log(item.groupname);
                         console.log(previousData.groupname);
                         if (item.groupname != previousData.groupname) {
@@ -202,8 +212,8 @@ var UserGroupService = /** @class */ (function () {
                                 return [2 /*return*/, "groupname"];
                             }
                         }
-                        _a.label = 10;
-                    case 10: return [2 /*return*/, true];
+                        _a.label = 11;
+                    case 11: return [2 /*return*/, true];
                 }
             });
         });
@@ -231,7 +241,7 @@ var UserGroupService = /** @class */ (function () {
                         return [4 /*yield*/, this.usergroupDAO.save(userGroup)];
                     case 5:
                         _a.sent();
-                        return [2 /*return*/, { id: userGroup.groupid, message: 'REMOVED' }];
+                        return [2 /*return*/, { id: userGroup.groupid, message: "REMOVED" }];
                     case 6:
                         error_4 = _a.sent();
                         throw error_4;

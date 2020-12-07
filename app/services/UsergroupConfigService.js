@@ -41,12 +41,14 @@ var UsergroupconfigDAO_1 = require("../repos/UsergroupconfigDAO");
 var UsergroupDAO_1 = require("../repos/UsergroupDAO");
 var typeorm_1 = require("typeorm");
 var RawQuery_1 = require("../common/RawQuery");
+var HistoryUsergroupConfigService_1 = require("./HistoryUsergroupConfigService");
 var uuid = require("uuid");
 var UsergroupConfigService = /** @class */ (function () {
     function UsergroupConfigService() {
         this.db = typeorm_1.getManager();
         this.usergroupconfigDAO = new UsergroupconfigDAO_1.UsergroupconfigDAO();
         this.usergroupDAO = new UsergroupDAO_1.UsergroupDAO();
+        this.historyUserGroupConfigService = new HistoryUsergroupConfigService_1.HistoryUsergroupConfigService();
         this.userInfo = new UserInfo_1.UserInfo();
         this.rawQuery = new RawQuery_1.RawQuery();
     }
@@ -132,6 +134,7 @@ var UsergroupConfigService = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 3, , 4]);
+                        data.lastmodifiedby = this.sessionInfo.userName;
                         return [4 /*yield*/, this.usergroupconfigDAO.saveAll(data)];
                     case 1:
                         _a.sent();
@@ -164,6 +167,7 @@ var UsergroupConfigService = /** @class */ (function () {
                         promiseList = [];
                         promiseList.push(this.usergroupconfigDAO.save(reqData));
                         promiseList.push(this.update_user_group(reqData));
+                        promiseList.push(this.historyUserGroupConfigService.save(reqData));
                         return [4 /*yield*/, Promise.all(promiseList)];
                     case 2:
                         _a.sent();

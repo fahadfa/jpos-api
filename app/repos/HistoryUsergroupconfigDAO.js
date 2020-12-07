@@ -137,7 +137,7 @@ var HistoryUsergroupconfigDAO = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         console.log(data);
-                        query = " update HistoryUsergroupconfig set \n                        special_products_for_colorant_option = '" + data.specialproductsforcolorantoption + "', \n                        blocklistedbasecolor = '" + data.blocklistedbasecolor + "',\n                        sabic_customers = '" + data.sabiccustomers + "',\n                        nocolorantcheckgroup = '" + data.nocolorantcheckgroup + "',\n                        workflowcustomers = '" + data.workflowcustomers + "',\n                        lastmodifieddate = '" + new Date().toISOString() + "'\n                        ";
+                        query = " update history_usergroupconfig set \n                        special_products_for_colorant_option = '" + data.specialproductsforcolorantoption + "', \n                        blocklistedbasecolor = '" + data.blocklistedbasecolor + "',\n                        sabic_customers = '" + data.sabiccustomers + "',\n                        nocolorantcheckgroup = '" + data.nocolorantcheckgroup + "',\n                        workflowcustomers = '" + data.workflowcustomers + "',\n                        lastmodifieddate = '" + new Date().toISOString() + "',\n                        lastmodifiedby = '" + data.lastmodifiedby + "'\n                        ";
                         return [4 /*yield*/, this.db.query(query)];
                     case 1:
                         _a.sent();

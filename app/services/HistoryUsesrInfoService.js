@@ -35,7 +35,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var App_1 = require("../../utils/App");
 var HistoryUserInfo_1 = require("../../entities/HistoryUserInfo");
 var Props_1 = require("../../constants/Props");
 var typeorm_1 = require("typeorm");
@@ -163,38 +162,9 @@ var HistoryUsesrInfoService = /** @class */ (function () {
             });
         });
     };
-    HistoryUsesrInfoService.prototype.changePassword = function (reqData) {
-        return __awaiter(this, void 0, void 0, function () {
-            var user, error_4;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 5, , 6]);
-                        return [4 /*yield*/, this.userinfoDAO.entity(this.sessionInfo.id)];
-                    case 1:
-                        user = _a.sent();
-                        if (!(reqData.oldPassword && App_1.App.HashCompareSync(reqData.oldPassword, user.password))) return [3 /*break*/, 3];
-                        user.userGroupConfig = user.userGroupConfig == null ? {} : user.userGroupConfig;
-                        user.userGroup = user.userGroup == null ? {} : user.userGroup;
-                        user.password = App_1.App.HashSync(reqData.newPassword);
-                        user.lastmodifieddate = new Date(App_1.App.DateNow());
-                        return [4 /*yield*/, this.userinfoDAO.save(user)];
-                    case 2:
-                        _a.sent();
-                        return [3 /*break*/, 4];
-                    case 3: throw { message: "INVALID_PASSWORD" };
-                    case 4: return [2 /*return*/, { id: user.id, message: "PASSWORD_UPDATED", status: 1 }];
-                    case 5:
-                        error_4 = _a.sent();
-                        throw error_4;
-                    case 6: return [2 /*return*/];
-                }
-            });
-        });
-    };
     HistoryUsesrInfoService.prototype.delete = function (id) {
         return __awaiter(this, void 0, void 0, function () {
-            var user, error_5;
+            var user, error_4;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -223,8 +193,8 @@ var HistoryUsesrInfoService = /** @class */ (function () {
                         _a.sent();
                         return [2 /*return*/, { id: user.id, message: Props_1.Props.REMOVED_SUCCESSFULLY }];
                     case 3:
-                        error_5 = _a.sent();
-                        throw error_5;
+                        error_4 = _a.sent();
+                        throw error_4;
                     case 4: return [2 /*return*/];
                 }
             });

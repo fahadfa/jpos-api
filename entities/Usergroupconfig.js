@@ -186,10 +186,6 @@ var Usergroupconfig = /** @class */ (function () {
         __metadata("design:type", String)
     ], Usergroupconfig.prototype, "istantdiscountexclude", void 0);
     __decorate([
-        typeorm_1.Column({ name: "showroomcountrycode" }),
-        __metadata("design:type", String)
-    ], Usergroupconfig.prototype, "showroomcountrycode", void 0);
-    __decorate([
         typeorm_1.Column({ name: "customercreationaccess" }),
         __metadata("design:type", String)
     ], Usergroupconfig.prototype, "customercreationaccess", void 0);
@@ -393,6 +389,18 @@ var Usergroupconfig = /** @class */ (function () {
         typeorm_1.Column({ name: "salesman_editable_customers" }),
         __metadata("design:type", String)
     ], Usergroupconfig.prototype, "salesmanEditableCustomers", void 0);
+    __decorate([
+        typeorm_1.Column({ name: "showroomcountrycode" }),
+        __metadata("design:type", String)
+    ], Usergroupconfig.prototype, "showroomCountryCode", void 0);
+    __decorate([
+        typeorm_1.Column({ name: "showroom_city_code" }),
+        __metadata("design:type", String)
+    ], Usergroupconfig.prototype, "showroomCityCode", void 0);
+    __decorate([
+        typeorm_1.Column({ name: "showroom_district_code" }),
+        __metadata("design:type", String)
+    ], Usergroupconfig.prototype, "showroomDistrictCode", void 0);
     Usergroupconfig = __decorate([
         typeorm_1.Entity("usergroupconfig")
     ], Usergroupconfig);

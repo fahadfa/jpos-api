@@ -41,6 +41,7 @@ var UserinfoDAO_1 = require("../repos/UserinfoDAO");
 var Props_1 = require("../../constants/Props");
 var typeorm_1 = require("typeorm");
 var RawQuery_1 = require("../common/RawQuery");
+var HistoryUsesrInfoService_1 = require("../services/HistoryUsesrInfoService");
 var uuid = require("uuid");
 var UsesrInfoService = /** @class */ (function () {
     function UsesrInfoService() {
@@ -48,6 +49,7 @@ var UsesrInfoService = /** @class */ (function () {
         this.userinfoDAO = new UserinfoDAO_1.UserinfoDAO();
         this.userInfo = new UserInfo_1.UserInfo();
         this.rawQuery = new RawQuery_1.RawQuery();
+        this.historyUsesrInfoService = new HistoryUsesrInfoService_1.HistoryUsesrInfoService();
     }
     UsesrInfoService.prototype.entity = function (id) {
         return __awaiter(this, void 0, void 0, function () {
@@ -135,32 +137,36 @@ var UsesrInfoService = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 4, , 5]);
+                        _a.trys.push([0, 5, , 6]);
                         return [4 /*yield*/, this.validate(reqData)];
                     case 1:
                         cond = _a.sent();
                         console.log(cond);
-                        if (!(cond == true)) return [3 /*break*/, 3];
+                        if (!(cond == true)) return [3 /*break*/, 4];
                         reqData.lastmodifieddate = new Date(App_1.App.DateNow());
                         reqData.lastmodifiedby = this.sessionInfo.userName;
                         reqData.userGroup = { groupid: reqData.groupid };
+                        this.historyUsesrInfoService.sessionInfo = this.sessionInfo;
                         return [4 /*yield*/, this.userinfoDAO.save(reqData)];
                     case 2:
                         user = _a.sent();
+                        return [4 /*yield*/, this.historyUsesrInfoService.save(reqData)];
+                    case 3:
+                        _a.sent();
                         returnData = { id: reqData.id, password: reqData.normalPassword, message: Props_1.Props.SAVED_SUCCESSFULLY };
                         return [2 /*return*/, returnData];
-                    case 3:
+                    case 4:
                         if (cond == "userName") {
                             throw { message: "RECORD_ALREADY_EXISTS" };
                         }
                         else {
                             throw { message: "INVALID_DATA" };
                         }
-                        return [3 /*break*/, 5];
-                    case 4:
+                        return [3 /*break*/, 6];
+                    case 5:
                         error_3 = _a.sent();
                         throw error_3;
-                    case 5: return [2 /*return*/];
+                    case 6: return [2 /*return*/];
                 }
             });
         });

@@ -77,7 +77,7 @@ var OrderReceiveReport = /** @class */ (function () {
                         salesLine = _a.sent();
                         i_1 = 1;
                         salesLine.map(function (v) {
-                            v.sNo += i_1;
+                            v.sNo = i_1;
                             i_1 += 1;
                         });
                         data_1.salesLine = salesLine;

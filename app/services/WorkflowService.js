@@ -156,7 +156,7 @@ var WorkflowService = /** @class */ (function () {
                             usergroupid = item.usergroupid;
                         }
                         _a.label = 6;
-                    case 6: return [4 /*yield*/, this.salesTableDAO.entity(item.orderId)];
+                    case 6: return [4 /*yield*/, this.salesTableDAO.transferorderEntity(item.orderId)];
                     case 7:
                         salesData = _a.sent();
                         if (!salesData) {
@@ -619,7 +619,7 @@ var WorkflowService = /** @class */ (function () {
                         if (!(process.env.ENV_STORE_ID && data.inventlocationid == process.env.ENV_STORE_ID)) return [3 /*break*/, 5];
                         // console.log("TODO", data.orderid);
                         console.log("11111111============================offline============");
-                        return [4 /*yield*/, this.salesTableDAO.entity(data.orderid)];
+                        return [4 /*yield*/, this.salesTableDAO.transferorderEntity(data.orderid)];
                     case 1:
                         salesData = _a.sent();
                         if (!(salesData.transkind == "INVENTORYMOVEMENT")) return [3 /*break*/, 4];
@@ -653,7 +653,7 @@ var WorkflowService = /** @class */ (function () {
                         if (!!offlineSystems) return [3 /*break*/, 10];
                         console.log("22222222online");
                         console.log("TODO", data.orderid, data);
-                        return [4 /*yield*/, this.salesTableDAO.entity(data.orderid)];
+                        return [4 /*yield*/, this.salesTableDAO.transferorderEntity(data.orderid)];
                     case 7:
                         salesData = _a.sent();
                         if (!(salesData.transkind == "INVENTORYMOVEMENT")) return [3 /*break*/, 9];

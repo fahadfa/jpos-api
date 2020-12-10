@@ -330,7 +330,7 @@ var SalesTableService = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 5, , 6]);
-                        return [4 /*yield*/, this.salestableDAO.entity(id.toUpperCase())];
+                        return [4 /*yield*/, this.salestableDAO.transferorderEntity(id.toUpperCase())];
                     case 1:
                         data = _a.sent();
                         if (!data) {
@@ -433,7 +433,7 @@ var SalesTableService = /** @class */ (function () {
             var data, salesLine, _i, salesLine_3, item;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.salestableDAO.entity(id.toUpperCase())];
+                    case 0: return [4 /*yield*/, this.salestableDAO.transferorderEntity(id.toUpperCase())];
                     case 1:
                         data = _a.sent();
                         if (!data) {
@@ -1049,7 +1049,7 @@ var SalesTableService = /** @class */ (function () {
                         if (statusData.status == "PAID" || statusData.status == "POSTED" || statusData.status == "PRINTED") {
                             throw "ALREADY_PAID";
                         }
-                        return [4 /*yield*/, this.salestableDAO.entity(data.orderId)];
+                        return [4 /*yield*/, this.salestableDAO.transferorderEntity(data.orderId)];
                     case 5:
                         salesData = _d.sent();
                         reqData = __assign({}, salesData);
@@ -1085,7 +1085,7 @@ var SalesTableService = /** @class */ (function () {
             var salesData, canConvert, colors, items, sizes, itemsInStock, itemString, reqData, customer;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.salestableDAO.entity(data.salesId)];
+                    case 0: return [4 /*yield*/, this.salestableDAO.transferorderEntity(data.salesId)];
                     case 1:
                         salesData = _a.sent();
                         canConvert = true;
@@ -1153,7 +1153,7 @@ var SalesTableService = /** @class */ (function () {
             var salesData, reqData, _a;
             return __generator(this, function (_b) {
                 switch (_b.label) {
-                    case 0: return [4 /*yield*/, this.salestableDAO.entity(data.salesId)];
+                    case 0: return [4 /*yield*/, this.salestableDAO.transferorderEntity(data.salesId)];
                     case 1:
                         salesData = _b.sent();
                         //console.log(salesData);
@@ -1189,7 +1189,7 @@ var SalesTableService = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 9, , 10]);
-                        return [4 /*yield*/, this.salestableDAO.entity(data.salesId)];
+                        return [4 /*yield*/, this.salestableDAO.transferorderEntity(data.salesId)];
                     case 1:
                         salesData = _a.sent();
                         //console.log(salesData);
@@ -1273,7 +1273,7 @@ var SalesTableService = /** @class */ (function () {
                 switch (_b.label) {
                     case 0:
                         _b.trys.push([0, 9, , 10]);
-                        return [4 /*yield*/, this.salestableDAO.entity(data.salesId)];
+                        return [4 /*yield*/, this.salestableDAO.transferorderEntity(data.salesId)];
                     case 1:
                         purchaseReturnData = _b.sent();
                         //console.log(purchaseReturnData);
@@ -1359,7 +1359,7 @@ var SalesTableService = /** @class */ (function () {
                         _a.label = 3;
                     case 3:
                         _a.trys.push([3, 11, 13, 15]);
-                        return [4 /*yield*/, this.salestableDAO.entity(id)];
+                        return [4 /*yield*/, this.salestableDAO.transferorderEntity(id)];
                     case 4:
                         salesData = _a.sent();
                         //console.log(salesData);
@@ -2014,7 +2014,7 @@ var SalesTableService = /** @class */ (function () {
                     case 1:
                         if (!(_i < _a.length)) return [3 /*break*/, 6];
                         item = _a[_i];
-                        return [4 /*yield*/, this.salestableDAO.entity(item.invoiceid)];
+                        return [4 /*yield*/, this.salestableDAO.transferorderEntity(item.invoiceid)];
                     case 2:
                         desginerService = _b.sent();
                         desginerService.taxGroup = reqData.taxGroup;
@@ -3357,7 +3357,7 @@ var SalesTableService = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 7, , 8]);
-                        return [4 /*yield*/, this.salestableDAO.entity(reqData.salesId)];
+                        return [4 /*yield*/, this.salestableDAO.transferorderEntity(reqData.salesId)];
                     case 1:
                         transferorder = _a.sent();
                         transferorder.status = "REJECTED";

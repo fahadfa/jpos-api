@@ -296,7 +296,7 @@
                                             <td>User</td>
                                             <td>:</td>
                                             <td>
-                                                {{cnamealias}}
+                                                {{user}}
                                             </td>
                                         </tr>
                                         <tr class="billing">
@@ -316,7 +316,13 @@
                                             <td>:</td>
                                             <td>300533832200003</td>
                                         </tr>
-
+                                        {{#if this.isDesignerServiceReturn}}
+                                        <tr>
+                                            <td>Designer Service Id</td>
+                                            <td>:</td>
+                                            <td>{{this.interCompanyOriginalSalesId}}</td>
+                                        </tr>
+                                        {{/if}}
 
 
 

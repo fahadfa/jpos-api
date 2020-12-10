@@ -275,6 +275,7 @@ var WorkflowService = /** @class */ (function () {
                         selectedLinesData = {
                             lines: selectedLines,
                         };
+                        console.log("=======================================", selectedLinesData);
                         return [3 /*break*/, 25];
                     case 24:
                         // console.log(item.statusId);
@@ -528,21 +529,23 @@ var WorkflowService = /** @class */ (function () {
                     case 2:
                         itemsInStock_1 = _a.sent();
                         lines.map(function (v) {
-                            var index = itemsInStock_1.findIndex(function (value) {
-                                return value.itemid.toLowerCase() == v.itemid.toLowerCase() &&
-                                    value.configid.toLowerCase() == v.configid.toLowerCase() &&
-                                    value.inventsizeid.toLowerCase() == v.inventsizeid.toLowerCase() &&
-                                    value.batchno.toLowerCase() == v.batchno.toLowerCase();
-                            });
-                            if (index >= 0) {
-                                if (Math.abs(parseInt(v.qty)) > parseInt(itemsInStock_1[index].qty)) {
+                            if (v.itemid != "HSN-00001") {
+                                var index = itemsInStock_1.findIndex(function (value) {
+                                    return value.itemid.toLowerCase() == v.itemid.toLowerCase() &&
+                                        value.configid.toLowerCase() == v.configid.toLowerCase() &&
+                                        value.inventsizeid.toLowerCase() == v.inventsizeid.toLowerCase() &&
+                                        value.batchno.toLowerCase() == v.batchno.toLowerCase();
+                                });
+                                if (index >= 0) {
+                                    if (Math.abs(parseInt(v.qty)) > parseInt(itemsInStock_1[index].qty)) {
+                                        canConvert_1 = canConvert_1 == true ? false : false;
+                                        itemString_1 += v.itemid + ",";
+                                    }
+                                }
+                                else {
                                     canConvert_1 = canConvert_1 == true ? false : false;
                                     itemString_1 += v.itemid + ",";
                                 }
-                            }
-                            else {
-                                canConvert_1 = canConvert_1 == true ? false : false;
-                                itemString_1 += v.itemid + ",";
                             }
                         });
                         return [2 /*return*/, canConvert_1];

@@ -219,7 +219,7 @@ var DiscountService = /** @class */ (function () {
                         return [4 /*yield*/, this.rawQuery.getTotalDiscPercentage(discounts[0].enddisc, reqData.currency, this.sessionInfo.dataareaid)];
                     case 2:
                         totalPercentage = _b.sent();
-                        return [4 /*yield*/, this.rawQuery.getTotalDiscPercentage(discounts[0].linedisc, reqData.currency, this.sessionInfo.dataareaid)];
+                        return [4 /*yield*/, this.rawQuery.getLineDiscPercentage(discounts[0].linedisc, reqData.currency, this.sessionInfo.dataareaid, reqData.custaccount)];
                     case 3:
                         linePercentage = _b.sent();
                         return [4 /*yield*/, this.rawQuery.getMultiDiscRanges(discounts[0].multilinedisc, reqData.currency, this.sessionInfo.dataareaid)];
@@ -868,21 +868,21 @@ var DiscountService = /** @class */ (function () {
         });
     };
     DiscountService.prototype.lineDiscount = function (item, reqData, checkDiscounts, linePercentage) {
-        if (linePercentage === void 0) { linePercentage = 0; }
         return __awaiter(this, void 0, void 0, function () {
             var linedisc, dummyData;
             return __generator(this, function (_a) {
                 console.log("lineDiscount");
-                linedisc = checkDiscounts.filter(function (v) { return v.itemid == item.itemid; });
+                linedisc = checkDiscounts.find(function (v) { return v.itemid == item.itemid; });
+                console.log(linedisc);
                 dummyData = {};
                 dummyData.linedisc = "";
-                linedisc = linedisc.length > 0 ? linedisc[0] : dummyData;
-                if (linedisc && linedisc.linedisc && linedisc.linedisc != "") {
-                    linePercentage = linePercentage;
-                }
-                else {
-                    linePercentage = 0;
-                }
+                linedisc = linedisc ? linedisc : dummyData;
+                // if (linedisc && linedisc.linedisc && linedisc.linedisc != "") {
+                linePercentage = linePercentage.find(function (v) { return v.itemrelation == item.itemid || v.itemrelation == linedisc.linedisc; });
+                linePercentage = linePercentage ? linePercentage.percent1 : 0;
+                // } else {
+                //   linePercentage = 0;
+                // }
                 item.linediscpercent = parseFloat(linePercentage);
                 item.linediscamt = parseFloat(item.price) * parseInt(item.quantity) * (parseFloat(linePercentage) / 100);
                 item.priceAfterdiscount =
@@ -1183,7 +1183,7 @@ var DiscountService = /** @class */ (function () {
     };
     DiscountService.prototype.getDiscountsList = function (reqData) {
         return __awaiter(this, void 0, void 0, function () {
-            var inQueryStr, checkDiscounts, promotionalDiscountItems, buyOneGetOneDiscountItems, discounts, salesDiscountItems;
+            var inQueryStr, checkDiscounts, promotionalDiscountItems, buyOneGetOneDiscountItems, discounts;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -1203,17 +1203,20 @@ var DiscountService = /** @class */ (function () {
                         return [4 /*yield*/, this.rawQuery.getDiscounts(reqData.custaccount)];
                     case 4:
                         discounts = _a.sent();
-                        return [4 /*yield*/, this.rawQuery.getSalesDisocuntItems(inQueryStr.substr(0, inQueryStr.length - 1), reqData.inventLocationId, reqData.custaccount, reqData.custtype)];
-                    case 5:
-                        salesDiscountItems = _a.sent();
                         return [4 /*yield*/, {
                                 checkDiscounts: checkDiscounts,
                                 promotionalDiscountItems: promotionalDiscountItems,
                                 discounts: discounts,
                                 buyOneGetOneDiscountItems: buyOneGetOneDiscountItems,
-                                salesDiscountItems: salesDiscountItems,
+                                salesDiscountItems: [],
                             }];
-                    case 6: 
+                    case 5: 
+                    // let salesDiscountItems: any = await this.rawQuery.getSalesDisocuntItems(
+                    //   inQueryStr.substr(0, inQueryStr.length - 1),
+                    //   reqData.inventLocationId,
+                    //   reqData.custaccount,
+                    //   reqData.custtype
+                    // );
                     // console.log(salesDiscountItems);
                     return [2 /*return*/, _a.sent()];
                 }

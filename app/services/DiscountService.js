@@ -385,7 +385,7 @@ var DiscountService = /** @class */ (function () {
                                         }
                                         condition = "!item.isItemFree";
                                         condition = eval(condition);
-                                        item.lineTotalDisc = 0;
+                                        item.lineTotalDisc = item.lineTotalDisc ? item.lineTotalDisc : 0;
                                         if (!condition) return [3 /*break*/, 43];
                                         appliedDiscounts = [];
                                         freeQty = 0;
@@ -454,6 +454,9 @@ var DiscountService = /** @class */ (function () {
                                         reqData.selectedItems[i].vatamount =
                                             parseFloat(reqData.selectedItems[i].priceAfterdiscount) * (reqData.selectedItems[i].vat / 100);
                                         reqData.selectedItems[i].priceAfterVat =
+                                            parseFloat(reqData.selectedItems[i].priceAfterdiscount) +
+                                                parseFloat(reqData.selectedItems[i].vatamount);
+                                        reqData.selectedItems[i].lineamount =
                                             parseFloat(reqData.selectedItems[i].priceAfterdiscount) +
                                                 parseFloat(reqData.selectedItems[i].vatamount);
                                         total += reqData.selectedItems[i].priceAfterVat;
@@ -769,6 +772,7 @@ var DiscountService = /** @class */ (function () {
                                     case 40:
                                         item.lineamountafterdiscount = parseFloat(item.priceAfterdiscount);
                                         item.vat = reqData.vat;
+                                        console.log(item.priceAfterdiscount);
                                         item.vatamount = parseFloat(item.priceAfterdiscount) * (item.vat / 100);
                                         item.priceAfterVat = parseFloat(item.priceAfterdiscount) + parseFloat(item.vatamount);
                                         total += item.priceAfterVat;
@@ -859,7 +863,6 @@ var DiscountService = /** @class */ (function () {
                 item.priceAfterdiscount = item.priceAfterdiscount
                     ? parseFloat(item.priceAfterdiscount) - parseFloat(item.enddiscamt)
                     : (parseFloat(item.price) + parseFloat(item.colorantprice)) * item.quantity - parseFloat(item.enddiscamt);
-                console.log(item.priceAfterdiscount);
                 item.lineTotalDisc = item.lineTotalDisc ? item.lineTotalDisc : 0;
                 item.lineTotalDisc += item.enddiscamt;
                 reqData.discount += item.enddiscamt;
@@ -869,26 +872,29 @@ var DiscountService = /** @class */ (function () {
     };
     DiscountService.prototype.lineDiscount = function (item, reqData, checkDiscounts, linePercentage) {
         return __awaiter(this, void 0, void 0, function () {
-            var linedisc, dummyData;
+            var linedisc;
             return __generator(this, function (_a) {
                 console.log("lineDiscount");
                 linedisc = checkDiscounts.find(function (v) { return v.itemid == item.itemid; });
-                console.log(linedisc);
-                dummyData = {};
-                dummyData.linedisc = "";
-                linedisc = linedisc ? linedisc : dummyData;
+                // console.log(linedisc);
+                // let dummyData: any = {};
+                // dummyData.linedisc = "";
+                // linedisc = linedisc ? linedisc : dummyData;
+                // console.log(linePercentage);
                 // if (linedisc && linedisc.linedisc && linedisc.linedisc != "") {
                 linePercentage = linePercentage.find(function (v) { return v.itemrelation == item.itemid || v.itemrelation == linedisc.linedisc; });
                 linePercentage = linePercentage ? linePercentage.percent1 : 0;
                 // } else {
                 //   linePercentage = 0;
                 // }
+                console.log(linePercentage);
                 item.linediscpercent = parseFloat(linePercentage);
                 item.linediscamt = parseFloat(item.price) * parseInt(item.quantity) * (parseFloat(linePercentage) / 100);
-                item.priceAfterdiscount =
-                    (parseFloat(item.priceAfterdiscount)
-                        ? parseFloat(item.priceAfterdiscount) - parseFloat(item.linediscamt)
-                        : (parseFloat(item.price) + parseFloat(item.colorantprice)) * item.quantity) - parseFloat(item.linediscamt);
+                console.log(item.priceAfterdiscount);
+                item.priceAfterdiscount = parseFloat(item.priceAfterdiscount)
+                    ? parseFloat(item.priceAfterdiscount) - parseFloat(item.linediscamt)
+                    : (parseFloat(item.price) + parseFloat(item.colorantprice)) * item.quantity - parseFloat(item.linediscamt);
+                console.log(item.priceAfterdiscount);
                 item.lineamountafterdiscount = parseFloat(item.priceAfterdiscount);
                 item.lineTotalDisc = item.lineTotalDisc ? item.lineTotalDisc : 0;
                 item.lineTotalDisc += parseFloat(item.linediscamt);
@@ -1243,10 +1249,11 @@ var DiscountService = /** @class */ (function () {
         reqData.vat = parseFloat(reqData.vat);
         for (var _i = 0, _a = reqData.selectedItems; _i < _a.length; _i++) {
             var ele = _a[_i];
+            console.log(ele.lineTotalDisc);
             ele.lineamount =
                 (ele.price + ele.colorantprice) * parseInt(ele.quantity) +
-                    parseFloat(ele.vatamount) -
-                    parseFloat(ele.lineTotalDisc);
+                    parseFloat(ele.lineTotalDisc) -
+                    parseFloat(ele.vatamount);
             ele.vatamount = parseFloat(ele.vatamount);
             ele.vat = parseFloat(ele.vat);
             ele.lineTotalDisc = parseFloat(ele.lineTotalDisc);

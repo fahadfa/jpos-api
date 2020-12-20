@@ -211,9 +211,57 @@ var PhoneVerificationService = /** @class */ (function () {
             });
         });
     };
+    PhoneVerificationService.prototype.sendOtpToGroup = function (item) {
+        return __awaiter(this, void 0, void 0, function () {
+            var query, groupPhoneNums, sendMsgPromisesList_1, saveList_1, otp_1, otpexpire_1, data, ids, error_6;
+            var _this = this;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 4, , 5]);
+                        if (!item.groupid) {
+                            throw { message: "Provide GroupId" };
+                        }
+                        query = "select ui.phone from user_info ui where ui.groupid ='" + item.groupid + "';";
+                        return [4 /*yield*/, this.phoneVerificationDAO.executeQuery(query)];
+                    case 1:
+                        groupPhoneNums = _a.sent();
+                        sendMsgPromisesList_1 = [];
+                        saveList_1 = [];
+                        otp_1 = App_1.App.generateOTP(4);
+                        otpexpire_1 = new Date(App_1.App.DateNow());
+                        groupPhoneNums.forEach(function (uiitem) {
+                            var phoneVerification = new PhoneVerification_1.PhoneVerification();
+                            phoneVerification.phoneNumber = uiitem.phone;
+                            phoneVerification.otpSent = otp_1;
+                            phoneVerification.customerId = item.groupid;
+                            phoneVerification.dataareaid = _this.sessionInfo.dataareaid;
+                            phoneVerification.createdBy = _this.sessionInfo.userName;
+                            phoneVerification.createdDateTime = new Date(App_1.App.DateNow());
+                            phoneVerification.countryCode = item.countryCode ? item.countryCode : 966;
+                            phoneVerification.otpExpiryTime = new Date(otpexpire_1.getTime() + 10 * 60 * 1000);
+                            saveList_1.push(phoneVerification);
+                            sendMsgPromisesList_1.push(_this.sms.sendMessage(phoneVerification.countryCode, phoneVerification.phoneNumber, phoneVerification.otpSent));
+                        });
+                        return [4 /*yield*/, this.phoneVerificationDAO.saveAll(saveList_1)];
+                    case 2:
+                        data = _a.sent();
+                        return [4 /*yield*/, Promise.all(sendMsgPromisesList_1)];
+                    case 3:
+                        _a.sent();
+                        ids = data.reduce(function (a, b) { return a.id + "," + b.id; });
+                        return [2 /*return*/, { id: ids, message: "OTP Sent" }];
+                    case 4:
+                        error_6 = _a.sent();
+                        throw { message: error_6 };
+                    case 5: return [2 /*return*/];
+                }
+            });
+        });
+    };
     PhoneVerificationService.prototype.verfiyOtp = function (item) {
         return __awaiter(this, void 0, void 0, function () {
-            var phoneVerification, error_6;
+            var phoneVerification, error_7;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -241,8 +289,8 @@ var PhoneVerificationService = /** @class */ (function () {
                     case 7: throw { message: "INVALID_MOBILE_NUMBER" };
                     case 8: return [3 /*break*/, 10];
                     case 9:
-                        error_6 = _a.sent();
-                        throw error_6;
+                        error_7 = _a.sent();
+                        throw error_7;
                     case 10: return [2 /*return*/];
                 }
             });

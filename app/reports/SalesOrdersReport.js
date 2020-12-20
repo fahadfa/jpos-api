@@ -229,6 +229,7 @@ var SalesOrdersReport = /** @class */ (function () {
                             query += " and (s.custaccount = '" + params.accountnum + "' or s.mobileno ='" + params.accountnum + "' or s.invoiceaccount='" + params.accountnum + "') ";
                         }
                         query += " order by s.createddatetime ASC";
+                        console.log(query);
                         return [4 /*yield*/, this.db.query(query)];
                     case 4: return [2 /*return*/, _a.sent()];
                 }

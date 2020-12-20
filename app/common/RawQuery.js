@@ -174,7 +174,11 @@ var RawQuery = /** @class */ (function () {
                             query += "\n      ,lastmodifieddate = '" + date + "' ";
                         }
                         query += " WHERE salesid = '" + salesId + "' or salesgroup = '" + salesId + "' or deliverystreet = '" + salesId + "' ";
-                        saleslineQuery = "UPDATE salesline SET status = '" + status + "' ,lastmodifieddate = '" + date + "'  WHERE salesid = '" + salesId + "' ";
+                        saleslineQuery = "UPDATE salesline SET status = '" + status + "'  ";
+                        if (date) {
+                            query += "\n      ,lastmodifieddate = '" + date + "' ";
+                        }
+                        saleslineQuery += " WHERE salesid = '" + salesId + "' ";
                         return [4 /*yield*/, this.db.query(query)];
                     case 1:
                         data = _a.sent();

@@ -626,7 +626,7 @@ var RawQuery = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        query = "\n        select amount as price, tinventsizeid as inventsizeid, configid, itemrelation as itemid\n        from pricedisctable \n        where (itemcode = 0) and (accountcode = 1 or accountcode = 0) \n        and currency = '" + data.currency + "' and \n        itemrelation = '" + data.itemid + "' and (configid='" + data.configid + "' or configid='--')  and \n        accountrelation = '" + data.custaccount + "' and tinventsizeid = '" + data.inventsizeid + "'\n        ";
+                        query = "\n        select amount as price, tinventsizeid as inventsizeid, configid, itemrelation as itemid\n        from pricedisctable \n        where (itemcode = 0) and (accountcode = 1 or accountcode = 0) \n        and currency = '" + data.currency + "' and \n        itemrelation = '" + data.itemid + "' and (configid='" + data.configid + "')  and \n        accountrelation = '" + data.custaccount + "' and tinventsizeid = '" + data.inventsizeid + "'\n        ";
                         return [4 /*yield*/, this.db.query(query)];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
@@ -639,7 +639,7 @@ var RawQuery = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        query = "\n            select amount as price, tinventsizeid as inventsizeid, configid, itemrelation as itemid\n            from pricedisctable \n            where (itemcode = 0) and (accountcode = 1 or accountcode = 0) \n            and currency = '" + data.currency + "' and \n            itemrelation = '" + data.itemid + "' and (configid='" + data.configid + "' or configid='--') and \n            accountrelation = '" + data.pricegroup + "' and tinventsizeid = '" + data.inventsizeid + "'\n            ";
+                        query = "\n            select amount as price, tinventsizeid as inventsizeid, configid, itemrelation as itemid\n            from pricedisctable \n            where (itemcode = 0) and (accountcode = 1 or accountcode = 0) \n            and currency = '" + data.currency + "' and \n            itemrelation = '" + data.itemid + "' and (configid='" + data.configid + "') and \n            accountrelation = '" + data.pricegroup + "' and tinventsizeid = '" + data.inventsizeid + "'\n            ";
                         return [4 /*yield*/, this.db.query(query)];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
@@ -652,7 +652,7 @@ var RawQuery = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        query = "\n            select amount as price, tinventsizeid as inventsizeid, configid, itemrelation as itemid, accountrelation as accountrelation\n            from pricedisctable \n            where relation = 4 and (itemcode = 0) and (accountcode = 1 or accountcode = 0) \n            and currency = '" + data.currency + "' and \n            lower(itemrelation) = lower('" + data.itemid + "') and (lower(configid)=lower('" + data.configid + "') or configid='--') and \n            (lower(accountrelation) = lower('" + data.pricegroup + "') or lower(accountrelation) = lower('" + data.custaccount + "') \n            ) and lower(tinventsizeid) in (" + data.inventsizeids + ")\n            ";
+                        query = "\n            select amount as price, tinventsizeid as inventsizeid, configid, itemrelation as itemid, accountrelation as accountrelation\n            from pricedisctable \n            where relation = 4 and (itemcode = 0) and (accountcode = 1 or accountcode = 0) \n            and currency = '" + data.currency + "' and \n            lower(itemrelation) = lower('" + data.itemid + "') and (lower(configid)=lower('" + data.configid + "')) and \n            (lower(accountrelation) = lower('" + data.pricegroup + "') or lower(accountrelation) = lower('" + data.custaccount + "') \n            ) and lower(tinventsizeid) in (" + data.inventsizeids + ")\n            ";
                         console.log(query);
                         return [4 /*yield*/, this.db.query(query)];
                     case 1: return [2 /*return*/, _a.sent()];
@@ -666,7 +666,7 @@ var RawQuery = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        query = "\n        select  amount \n        from pricedisctable \n        where (itemcode = 0) and (accountcode = 1 or accountcode = 0) \n        and currency = '" + data.currency + "' and itemrelation = '" + data.itemid + "' and (configid='" + data.configid + "' or configid='--')\n        and tinventsizeid = '" + data.inventsizeid + "' and \n        (accountrelation = '" + data.pricegroup + "' or  accountrelation = '" + data.custaccount + "') limit 1\n        ";
+                        query = "\n        select  amount \n        from pricedisctable \n        where (itemcode = 0) and (accountcode = 1 or accountcode = 0) \n        and currency = '" + data.currency + "' and itemrelation = '" + data.itemid + "' and (configid='" + data.configid + "')\n        and tinventsizeid = '" + data.inventsizeid + "' and \n        (accountrelation = '" + data.pricegroup + "' or  accountrelation = '" + data.custaccount + "') limit 1\n        ";
                         return [4 /*yield*/, this.db.query(query)];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
@@ -1587,6 +1587,24 @@ var RawQuery = /** @class */ (function () {
                     case 1:
                         data = _a.sent();
                         return [2 /*return*/, data.length > 0 ? data[0].name_en : "-"];
+                }
+            });
+        });
+    };
+    RawQuery.prototype.getAppLangName = function (key) {
+        return __awaiter(this, void 0, void 0, function () {
+            var ids, data;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        ids = key
+                            .split(",")
+                            .map(function (a) { return "'" + a + "'"; })
+                            .join(",");
+                        return [4 /*yield*/, this.db.query("select al.en,al.ar from app_lang al \n    where al.id  in(" + ids + ")")];
+                    case 1:
+                        data = _a.sent();
+                        return [2 /*return*/, data.length > 0 ? data[0] : null];
                 }
             });
         });

@@ -37,9 +37,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var typeorm_1 = require("typeorm");
 var App_1 = require("../../utils/App");
+var RawQuery_1 = require("../common/RawQuery");
 var ItemBalanceReport = /** @class */ (function () {
     function ItemBalanceReport() {
         this.db = typeorm_1.getManager();
+        this.rawQuery = new RawQuery_1.RawQuery();
     }
     ItemBalanceReport.prototype.execute = function (params) {
         return __awaiter(this, void 0, void 0, function () {
@@ -108,27 +110,37 @@ var ItemBalanceReport = /** @class */ (function () {
     };
     ItemBalanceReport.prototype.report = function (result, params) {
         return __awaiter(this, void 0, void 0, function () {
-            var renderData, file;
+            var renderData, title, file;
             return __generator(this, function (_a) {
-                // console.log(result.salesLine[0].product.nameEnglish);
-                renderData = result;
-                renderData.fromDate = params.fromDate;
-                renderData.toDate = params.toDate;
-                renderData.inventlocationid = params.inventlocationid;
-                renderData.printDate = new Date(params.printDate).toISOString().replace(/T/, " ").replace(/\..+/, "");
-                if (params.type == "excel") {
-                    file = params.lang == "en" ? "itembalance-excel" : "itembalance-excel-ar";
+                switch (_a.label) {
+                    case 0:
+                        // console.log(result.salesLine[0].product.nameEnglish);
+                        renderData = result;
+                        renderData.fromDate = params.fromDate;
+                        renderData.toDate = params.toDate;
+                        renderData.inventlocationid = params.inventlocationid;
+                        renderData.printDate = new Date(params.printDate).toISOString().replace(/T/, " ").replace(/\..+/, "");
+                        return [4 /*yield*/, this.rawQuery.getAppLangName("ITEM_BALANCE_REPORT")];
+                    case 1:
+                        title = _a.sent();
+                        if (title) {
+                            result.title = title;
+                            console.table(title);
+                        }
+                        if (params.type == "excel") {
+                            file = params.lang == "en" ? "itembalance-excel" : "itembalance-excel-ar";
+                        }
+                        else {
+                            file = params.lang == "en" ? "itembalance-report" : "itembalance-report-ar";
+                        }
+                        try {
+                            return [2 /*return*/, App_1.App.HtmlRender(file, renderData)];
+                        }
+                        catch (error) {
+                            throw error;
+                        }
+                        return [2 /*return*/];
                 }
-                else {
-                    file = params.lang == "en" ? "itembalance-report" : "itembalance-report-ar";
-                }
-                try {
-                    return [2 /*return*/, App_1.App.HtmlRender(file, renderData)];
-                }
-                catch (error) {
-                    throw error;
-                }
-                return [2 /*return*/];
             });
         });
     };

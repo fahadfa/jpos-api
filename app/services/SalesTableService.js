@@ -2606,7 +2606,7 @@ var SalesTableService = /** @class */ (function () {
     };
     SalesTableService.prototype.saveOrderShipment = function (reqData) {
         return __awaiter(this, void 0, void 0, function () {
-            var queryRunner, salesLine, transactionClosed, salesData, checkStatus, checkToData, checkPrevData, cond, promiseList, _i, salesLine_9, item, qty, returnData, error_18;
+            var queryRunner, salesLine, transactionClosed, salesData, checkStatus, relatedData, prevData, checkToData, checkPrevData, cond, promiseList, _i, salesLine_9, item, qty, returnData, error_18;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -2626,10 +2626,14 @@ var SalesTableService = /** @class */ (function () {
                         transactionClosed = false;
                         salesData = void 0;
                         checkStatus = false;
-                        return [4 /*yield*/, this.db.query("select * from salestable where salesid= '" + reqData.interCompanyOriginalSalesId + "' ")];
+                        return [4 /*yield*/, this.db.query("select salesid, status from salestable where salesid in  ('" + reqData.interCompanyOriginalSalesId + "', '" + reqData.salesId + "') ")];
                     case 4:
-                        checkToData = _a.sent();
-                        if (!(checkToData && checkToData.length > 0)) return [3 /*break*/, 6];
+                        relatedData = _a.sent();
+                        prevData = reqData.salesId ? relatedData.find(function (v) { return v.salesid == reqData.salesId; }) : null;
+                        checkToData = reqData.interCompanyOriginalSalesId
+                            ? relatedData.find(function (v) { return v.salesid == reqData.interCompanyOriginalSalesId; })
+                            : null;
+                        if (!checkToData) return [3 /*break*/, 6];
                         return [4 /*yield*/, this.db.query("select * from salestable where intercompanyoriginalsalesid  = '" + reqData.interCompanyOriginalSalesId + "' and salesid!= '" + reqData.salesId + "' ")];
                     case 5:
                         checkPrevData = _a.sent();
@@ -2638,9 +2642,13 @@ var SalesTableService = /** @class */ (function () {
                             throw { message: "ALREADY_SHIPPED" };
                         }
                         _a.label = 6;
-                    case 6: return [4 /*yield*/, this.salestableDAO.findOne({
-                            salesId: reqData.interCompanyOriginalSalesId,
-                        })];
+                    case 6:
+                        if (prevData && prevData.status == "POSTED") {
+                            throw { message: "ALREADY_SHIPPED" };
+                        }
+                        return [4 /*yield*/, this.salestableDAO.findOne({
+                                salesId: reqData.interCompanyOriginalSalesId,
+                            })];
                     case 7:
                         salesData = _a.sent();
                         //console.log(salesData);

@@ -139,18 +139,28 @@ var DesignerServiceReport = /** @class */ (function () {
     };
     DesignerServiceReport.prototype.report = function (result, params) {
         return __awaiter(this, void 0, void 0, function () {
-            var renderData, file;
+            var renderData, title, file;
             return __generator(this, function (_a) {
-                renderData = result;
-                file = params.lang == "en" ? "designer-service-en" : "designer-service-ar";
-                renderData.user = params.user ? params.user : "";
-                try {
-                    return [2 /*return*/, App_1.App.HtmlRender(file, renderData)];
+                switch (_a.label) {
+                    case 0:
+                        renderData = result;
+                        return [4 /*yield*/, this.rawQuery.getAppLangName("DESIGNER_SERVICE_REPORT")];
+                    case 1:
+                        title = _a.sent();
+                        if (title) {
+                            renderData.title = title;
+                            console.table(title);
+                        }
+                        file = params.lang == "en" ? "designer-service-en" : "designer-service-ar";
+                        renderData.user = params.user ? params.user : "";
+                        try {
+                            return [2 /*return*/, App_1.App.HtmlRender(file, renderData)];
+                        }
+                        catch (error) {
+                            throw error;
+                        }
+                        return [2 /*return*/];
                 }
-                catch (error) {
-                    throw error;
-                }
-                return [2 /*return*/];
             });
         });
     };

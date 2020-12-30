@@ -151,27 +151,37 @@ var HistoricalCustomerReport = /** @class */ (function () {
     };
     HistoricalCustomerReport.prototype.report = function (result, params) {
         return __awaiter(this, void 0, void 0, function () {
-            var renderData, file, completeData;
+            var renderData, title, file, completeData;
             return __generator(this, function (_a) {
-                renderData = result;
-                console.log("data:----------", renderData);
-                file = params.lang == "en" ? "historical-customer-en" : "historical-customer-ar";
-                try {
-                    completeData = { data: renderData };
-                    completeData.fromDate = params.fromDate; //App.convertUTCDateToLocalDate(new Date(params.fromDate),params.timeZoneOffset);
-                    completeData.toDate = params.toDate; //App.convertUTCDateToLocalDate(new Date(params.toDate),params.timeZoneOffset);
-                    completeData.printDate = params.printDate; //App.convertUTCDateToLocalDate(new Date(params.printDate),params.timeZoneOffset)
-                    completeData.user = params.user ? params.user : "";
-                    completeData.customername = result.length > 0 ? result[0].customername : "";
-                    completeData.walkincustomer = result.length > 0 ? result[0].walkincustomer : "";
-                    completeData.phone = result.length > 0 && completeData.walkincustomer ? result[0].phone : "";
-                    completeData.custAccount = result.length > 0 ? result[0].custAccount : "";
-                    return [2 /*return*/, App_1.App.HtmlRender(file, completeData)];
+                switch (_a.label) {
+                    case 0:
+                        renderData = result;
+                        return [4 /*yield*/, this.rawQuery.getAppLangName("HISTORICAL_CUSTOMER_REPORT")];
+                    case 1:
+                        title = _a.sent();
+                        if (title) {
+                            result.title = title;
+                            console.table(title);
+                        }
+                        console.log("data:----------", renderData);
+                        file = params.lang == "en" ? "historical-customer-en" : "historical-customer-ar";
+                        try {
+                            completeData = { data: renderData };
+                            completeData.fromDate = params.fromDate; //App.convertUTCDateToLocalDate(new Date(params.fromDate),params.timeZoneOffset);
+                            completeData.toDate = params.toDate; //App.convertUTCDateToLocalDate(new Date(params.toDate),params.timeZoneOffset);
+                            completeData.printDate = params.printDate; //App.convertUTCDateToLocalDate(new Date(params.printDate),params.timeZoneOffset)
+                            completeData.user = params.user ? params.user : "";
+                            completeData.customername = result.length > 0 ? result[0].customername : "";
+                            completeData.walkincustomer = result.length > 0 ? result[0].walkincustomer : "";
+                            completeData.phone = result.length > 0 && completeData.walkincustomer ? result[0].phone : "";
+                            completeData.custAccount = result.length > 0 ? result[0].custAccount : "";
+                            return [2 /*return*/, App_1.App.HtmlRender(file, completeData)];
+                        }
+                        catch (error) {
+                            throw error;
+                        }
+                        return [2 /*return*/];
                 }
-                catch (error) {
-                    throw error;
-                }
-                return [2 /*return*/];
             });
         });
     };

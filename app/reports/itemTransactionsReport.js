@@ -37,9 +37,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var typeorm_1 = require("typeorm");
 var App_1 = require("../../utils/App");
+var RawQuery_1 = require("../common/RawQuery");
 var itemTransactionsReport = /** @class */ (function () {
     function itemTransactionsReport() {
         this.db = typeorm_1.getManager();
+        this.rawQuery = new RawQuery_1.RawQuery();
     }
     itemTransactionsReport.prototype.execute = function (params) {
         return __awaiter(this, void 0, void 0, function () {
@@ -129,10 +131,16 @@ var itemTransactionsReport = /** @class */ (function () {
     };
     itemTransactionsReport.prototype.report = function (result, params) {
         return __awaiter(this, void 0, void 0, function () {
-            var file, query, data;
+            var title, file, query, data;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
+                    case 0: return [4 /*yield*/, this.rawQuery.getAppLangName("ITEM_TRANSACTION_REPORT")];
+                    case 1:
+                        title = _a.sent();
+                        if (title) {
+                            result.title = title;
+                            console.table(title);
+                        }
                         if (params.type == "excel") {
                             file = params.lang == "en" ? "itemtransactions-excel" : "itemtransactions-excel-ar";
                         }
@@ -143,10 +151,10 @@ var itemTransactionsReport = /** @class */ (function () {
                         if (!(result.batchno == "ALL" ||
                             result.product === "ALL" ||
                             result.color === "ALL" ||
-                            result.inventsizeid === "ALL")) return [3 /*break*/, 2];
+                            result.inventsizeid === "ALL")) return [3 /*break*/, 3];
                         query = "select * from app_lang ap where ap.id = 'ALL' limit 1";
                         return [4 /*yield*/, this.db.query(query)];
-                    case 1:
+                    case 2:
                         data = _a.sent();
                         data = data.length > 0 ? data[0] : {};
                         if (result.batchno == "ALL") {
@@ -161,8 +169,8 @@ var itemTransactionsReport = /** @class */ (function () {
                         if (result.inventsizeid == "ALL") {
                             result.inventsizeid = params.lang == "en" ? data.en : data.ar;
                         }
-                        _a.label = 2;
-                    case 2:
+                        _a.label = 3;
+                    case 3:
                         console.table(result);
                         try {
                             return [2 /*return*/, App_1.App.HtmlRender(file, result)];

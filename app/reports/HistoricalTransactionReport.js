@@ -88,6 +88,7 @@ var HistoricalTransactionReport = /** @class */ (function () {
                             data_1.quantity += parseInt(quan);
                         });
                         data_1.disc = data_1.disc ? data_1.disc : 0;
+                        console.log(data_1.salesLine);
                         data_1.vat = data_1.salesLine.length > 0 ? parseInt(data_1.salesLine[0].vat) : "-";
                         return [3 /*break*/, 11];
                     case 7: return [4 /*yield*/, this.oldDataUrl(params)];
@@ -209,7 +210,7 @@ var HistoricalTransactionReport = /** @class */ (function () {
                         _b.label = 11;
                     case 11:
                         data_1.disc = data_1.disc ? data_1.disc : '0.00';
-                        data_1.vat = data_1.salesLine[0].vat;
+                        data_1.vat = data_1.salesLine.length ? data_1.salesLine[0].vat : 0;
                         // console.log("=================final review=======================",data)
                         return [2 /*return*/, data_1];
                     case 12: throw { message: "Select Invoice ID" };
@@ -251,32 +252,52 @@ var HistoricalTransactionReport = /** @class */ (function () {
     };
     HistoricalTransactionReport.prototype.report = function (result, params) {
         return __awaiter(this, void 0, void 0, function () {
-            var renderData, FILES, file;
+            var renderData, TTITLE_KEYS, KEY, title, FILES, file;
             return __generator(this, function (_a) {
-                renderData = result;
-                FILES = {
-                    "DESIGNERSERVICE": params.lang == "en" ? "historical-transaction-designer-service-en" : "historical-transaction-designer-service-ar",
-                    "DESIGNERSERVICERETURN": params.lang == "en" ? "historical-transaction-designer-service-en" : "historical-transaction-designer-service-ar",
-                    "INVENTORYMOVEMENT": params.lang == "en" ? "historical-transaction-movement-en" : "historical-transaction-movement-ar",
-                    "ORDERRECEIVE": params.lang == "en" ? "historical-transaction-orderreceive-en" : "historical-transaction-orderreceive-ar",
-                    "ORDERSHIPMENT": params.lang == "en" ? "historical-transaction-ordershipment-en" : "historical-transaction-ordershipment-ar",
-                    "OTHERS": params.lang == "en" ? "historical-transaction-en" : "historical-transaction-ar"
-                };
-                file = FILES[renderData.transkind];
-                file = file ? file : FILES["OTHERS"];
-                params.user ? renderData.user = params.user : null;
-                if (renderData.transkind == 'DESIGNERSERVICERETURN') {
-                    renderData.isDesignerServiceReturn = true;
+                switch (_a.label) {
+                    case 0:
+                        renderData = result;
+                        TTITLE_KEYS = {
+                            "DESIGNERSERVICE": "DESIGNER_SERVICE_REPORT",
+                            "DESIGNERSERVICERETURN": "DESIGNERSERVICERETURN",
+                            "INVENTORYMOVEMENT": "MOVEMENT_REPORT",
+                            "ORDERRECEIVE": "ORDER_RECEIVE",
+                            "ORDERSHIPMENT": "ORDERSHIPMENT",
+                            "OTHERS": "SALES_REPORT"
+                        };
+                        KEY = TTITLE_KEYS[renderData.transkind];
+                        KEY = KEY ? KEY : TTITLE_KEYS["OTHERS"];
+                        return [4 /*yield*/, this.rawQuery.getAppLangName(KEY)];
+                    case 1:
+                        title = _a.sent();
+                        if (title) {
+                            result.title = title;
+                            console.table(title);
+                        }
+                        FILES = {
+                            "DESIGNERSERVICE": params.lang == "en" ? "historical-transaction-designer-service-en" : "historical-transaction-designer-service-ar",
+                            "DESIGNERSERVICERETURN": params.lang == "en" ? "historical-transaction-designer-service-en" : "historical-transaction-designer-service-ar",
+                            "INVENTORYMOVEMENT": params.lang == "en" ? "historical-transaction-movement-en" : "historical-transaction-movement-ar",
+                            "ORDERRECEIVE": params.lang == "en" ? "historical-transaction-orderreceive-en" : "historical-transaction-orderreceive-ar",
+                            "ORDERSHIPMENT": params.lang == "en" ? "historical-transaction-ordershipment-en" : "historical-transaction-ordershipment-ar",
+                            "OTHERS": params.lang == "en" ? "historical-transaction-en" : "historical-transaction-ar"
+                        };
+                        file = FILES[renderData.transkind];
+                        file = file ? file : FILES["OTHERS"];
+                        params.user ? renderData.user = params.user : null;
+                        if (renderData.transkind == 'DESIGNERSERVICERETURN') {
+                            renderData.isDesignerServiceReturn = true;
+                        }
+                        // console.log("Report ======> ", file);
+                        console.log(renderData);
+                        try {
+                            return [2 /*return*/, App_1.App.HtmlRender(file, renderData)];
+                        }
+                        catch (error) {
+                            throw error;
+                        }
+                        return [2 /*return*/];
                 }
-                // console.log("Report ======> ", file);
-                console.log(renderData);
-                try {
-                    return [2 /*return*/, App_1.App.HtmlRender(file, renderData)];
-                }
-                catch (error) {
-                    throw error;
-                }
-                return [2 /*return*/];
             });
         });
     };

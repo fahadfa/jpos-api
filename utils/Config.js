@@ -13,6 +13,13 @@ exports.dbOptions = {
     logging: true,
     synchronize: false,
     entities: [__dirname + "/../entities/**/*{.ts,.js}"],
+    connectTimeoutMS: 0,
+    extra: {
+        max: 25,
+        min: 5,
+        idleTimeoutMillis: 0,
+        connectionTimeoutMillis: 0,
+    },
 };
 // =============== QA STAGING DATABASE ==================
 exports.stageDbOptions = {

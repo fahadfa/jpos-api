@@ -112,6 +112,9 @@ var WorkflowService = /** @class */ (function () {
                             item.inventoryType = item.SalesTable ? item.SalesTable.movementType : null;
                             item.inventoryTypeAr = item.SalesTable ? item.SalesTable.movementType : null;
                             item.selectedLines = item.selectedLines ? item.selectedLines.lines : null;
+                            item.invoiceDate = new Date(item.SalesTable.invoiceDate).toLocaleDateString();
+                            item.invoiceId = item.SalesTable.interCompanyOriginalSalesId;
+                            item.info = item.SalesTable.info;
                             delete item.SalesTable;
                         });
                         return [2 /*return*/, data];
@@ -126,7 +129,7 @@ var WorkflowService = /** @class */ (function () {
     WorkflowService.prototype.save = function (item, type) {
         if (type === void 0) { type = null; }
         return __awaiter(this, void 0, void 0, function () {
-            var queryRunner, status_1, promistList, condition, usergroupid, selectedLinesData, salesData, RM_AND_RA, canSendForApproval, transactions, date, inventtransQuery, _i, transactions_1, v, selectedLines, cond, salesSaveData, error_3;
+            var queryRunner, status_1, info, promistList, usergroupid, inventlocationid, selectedLinesData, condition, salesData, RM_AND_RA, canSendForApproval, date, inventtransQuery, selectedLines, cond, salesSaveData, error_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -139,80 +142,84 @@ var WorkflowService = /** @class */ (function () {
                         _a.sent();
                         _a.label = 3;
                     case 3:
-                        _a.trys.push([3, 36, 38, 40]);
+                        _a.trys.push([3, 35, 37, 39]);
                         status_1 = item.status;
+                        info = item.info;
                         promistList = [];
-                        return [4 /*yield*/, this.rawQuery.workflowconditions(this.sessionInfo.usergroupconfigid)];
-                    case 4:
-                        condition = _a.sent();
                         usergroupid = this.sessionInfo.groupid;
+                        inventlocationid = this.sessionInfo.inventlocationid;
                         selectedLinesData = null;
-                        if (!(item.id || item.orderId)) return [3 /*break*/, 34];
-                        if (!item.id) return [3 /*break*/, 6];
+                        if (!(item.id || item.orderId)) return [3 /*break*/, 33];
+                        if (!item.id) return [3 /*break*/, 5];
                         return [4 /*yield*/, this.workflowDAO.entity(item.id)];
-                    case 5:
+                    case 4:
                         item = _a.sent();
+                        // console.log(item);
                         if (item) {
                             usergroupid = item.usergroupid;
+                            inventlocationid = item.inventLocationId;
                         }
-                        _a.label = 6;
-                    case 6: return [4 /*yield*/, this.salesTableDAO.transferorderEntity(item.orderId)];
+                        _a.label = 5;
+                    case 5: return [4 /*yield*/, this.rawQuery.workflowconditions(usergroupid, inventlocationid)];
+                    case 6:
+                        condition = _a.sent();
+                        return [4 /*yield*/, this.salesTableDAO.transferorderEntity(item.orderId)];
                     case 7:
                         salesData = _a.sent();
                         if (!salesData) {
-                            throw Props_1.Props.ORDER_NOT_FOUND;
+                            throw { status: 0, message: "ORDER_NOT_FOUND" };
                         }
                         return [4 /*yield*/, this.rawQuery.getRmAndRa(usergroupid)];
                     case 8:
                         RM_AND_RA = _a.sent();
-                        if (!(type == "sendforapproval")) return [3 /*break*/, 24];
+                        if (!(type == "sendforapproval")) return [3 /*break*/, 23];
                         return [4 /*yield*/, this.allocateData(item, salesData)];
                     case 9:
                         _a.sent();
                         if (!(salesData.transkind == "RETURNORDER")) return [3 /*break*/, 10];
+                        //  else {
                         if (condition.rmApprovalRequired) {
-                            item.statusId = Props_1.Props.WORKFLOW_STATUSID.PENDINGRMAPPROVAL[0];
+                            item.statusId = "PENDINGRMAPPROVAL";
                             if (RM_AND_RA.rm && RM_AND_RA.rm != "") {
                                 item.pendingWith = RM_AND_RA.rm;
                             }
                             else {
-                                throw { message: "NO_RM_ADDED_TO_YOUR_GROUP_PLEASE_CONTACT_SYSTEM_ADMIN" };
+                                throw { status: 0, message: "NO_RM_ADDED_TO_YOUR_GROUP_PLEASE_CONTACT_SYSTEM_ADMIN" };
                             }
                         }
                         else if (condition.raApprovalRequired) {
-                            item.statusId = Props_1.Props.WORKFLOW_STATUSID.PENDINGRAPPROVAL[0];
+                            item.statusId = "PENDINGRAPPROVAL";
                             if (RM_AND_RA.ra && RM_AND_RA.ra != "") {
                                 item.pendingWith = RM_AND_RA.ra;
                             }
                             else {
-                                throw { message: "NO_RA_ADDED_TO_YOUR_GROUP_PLEASE_CONTACT_SYSTEM_ADMIN" };
+                                throw { status: 0, message: "NO_RA_ADDED_TO_YOUR_GROUP_PLEASE_CONTACT_SYSTEM_ADMIN" };
                             }
                         }
-                        return [3 /*break*/, 22];
+                        return [3 /*break*/, 21];
                     case 10:
-                        if (!(salesData.transkind == "INVENTORYMOVEMENT")) return [3 /*break*/, 21];
+                        if (!(salesData.transkind == "INVENTORYMOVEMENT")) return [3 /*break*/, 20];
                         return [4 /*yield*/, this.stockOnHandCheck(salesData)];
                     case 11:
                         canSendForApproval = _a.sent();
-                        console.log(canSendForApproval);
-                        if (!canSendForApproval) return [3 /*break*/, 19];
+                        if (!canSendForApproval) return [3 /*break*/, 18];
                         if (![5, 8, 9].includes(salesData.movementType.id)) return [3 /*break*/, 12];
-                        item.statusId = Props_1.Props.WORKFLOW_STATUSID.PENDINGRMAPPROVAL[0];
+                        item.statusId = "PENDINGRMAPPROVAL";
                         if (RM_AND_RA.rm && RM_AND_RA.rm != "") {
                             item.pendingWith = RM_AND_RA.rm;
                         }
                         else {
-                            throw { message: "NO_RM_ADDED_TO_YOUR_GROUP_PLEASE_CONTACT_SYSTEM_ADMIN" };
+                            throw { status: 0, message: "NO_RM_ADDED_TO_YOUR_GROUP_PLEASE_CONTACT_SYSTEM_ADMIN" };
                         }
                         return [3 /*break*/, 16];
                     case 12:
                         if (![1, 2, 3, 4, 6, 7].includes(salesData.movementType.id)) return [3 /*break*/, 13];
-                        item.statusId = Props_1.Props.WORKFLOW_STATUSID.PENDINGRAAPPROVAL[0];
+                        item.statusId = "PENDINGRAAPPROVAL";
                         if (RM_AND_RA.ra && RM_AND_RA.ra != "") {
                             item.pendingWith = RM_AND_RA.ra;
                         }
                         else {
-                            throw { message: "NO_RA_ADDED_TO_YOUR_GROUP_PLEASE_CONTACT_SYSTEM_ADMIN" };
+                            throw { status: 0, message: "NO_RA_ADDED_TO_YOUR_GROUP_PLEASE_CONTACT_SYSTEM_ADMIN" };
                         }
                         return [3 /*break*/, 16];
                     case 13: return [4 /*yield*/, this.rawQuery.updateSalesTableWorkFlowStatus(salesData.salesId, "NOWORKFLOW")];
@@ -220,10 +227,7 @@ var WorkflowService = /** @class */ (function () {
                     case 15:
                         _a.sent();
                         return [2 /*return*/, { id: salesData.salesId, status: "NOWORKFLOW", message: Props_1.Props.SAVED_SUCCESSFULLY }];
-                    case 16: return [4 /*yield*/, this.inventtransDAO.findAll({ invoiceid: salesData.salesId })];
-                    case 17:
-                        transactions = _a.sent();
-                        transactions = transactions.filter(function (v) { return v.qty < 0; });
+                    case 16:
                         date = new Date().toISOString();
                         inventtransQuery = " UPDATE inventtrans SET transactionclosed = " + true + ", reserve_status = 'RESERVED'  ";
                         if (date) {
@@ -231,37 +235,32 @@ var WorkflowService = /** @class */ (function () {
                         }
                         inventtransQuery += " WHERE invoiceid = '" + salesData.salesId.toUpperCase() + "' and qty < 0";
                         return [4 /*yield*/, queryRunner.query(inventtransQuery)];
-                    case 18:
+                    case 17:
                         _a.sent();
-                        for (_i = 0, transactions_1 = transactions; _i < transactions_1.length; _i++) {
-                            v = transactions_1[_i];
-                            // await this.updateInventoryService.updateInventoryOnhandTable(v, true, queryRunner);
-                        }
-                        console.log(transactions);
-                        return [3 /*break*/, 20];
-                    case 19: throw { message: "CANNOT_CREATE_MOVEMENT_ORDER" };
-                    case 20: return [3 /*break*/, 22];
-                    case 21:
+                        return [3 /*break*/, 19];
+                    case 18: throw { status: 0, message: "SOME_OF_THE_ITEMS_ARE_OUT_OF_STOCK" };
+                    case 19: return [3 /*break*/, 21];
+                    case 20:
                         if (salesData.transkind == "DESIGNERSERVICERETURN") {
-                            item.statusId = Props_1.Props.WORKFLOW_STATUSID.PENDINGINGFORDESIGNERAPPROVAL[0];
+                            item.statusId = "PENDINGINGFORDESIGNERAPPROVAL";
                             if (RM_AND_RA.designer_signing_authority && RM_AND_RA.designer_signing_authority != "") {
                                 item.pendingWith = RM_AND_RA.designer_signing_authority;
                             }
                             else {
-                                throw { message: "NO_DESIGNER_ADDED_TO_YOUR_GROUP_PLEASE_CONTACT" };
+                                throw { status: 0, message: "NO_DESIGNER_ADDED_TO_YOUR_GROUP_PLEASE_CONTACT" };
                             }
                         }
                         else {
-                            item.statusId = Props_1.Props.WORKFLOW_STATUSID.PENDINGRMAPPROVAL[0];
+                            item.statusId = "PENDINGRMAPPROVAL";
                             if (RM_AND_RA.rm && RM_AND_RA.rm != "") {
                                 item.pendingWith = RM_AND_RA.rm;
                             }
                             else {
-                                throw { message: "NO_RM_ADDED_TO_YOUR_GROUP_PLEASE_CONTACT_SYSTEM_ADMIN" };
+                                throw { status: 0, message: "NO_RM_ADDED_TO_YOUR_GROUP_PLEASE_CONTACT_SYSTEM_ADMIN" };
                             }
                         }
-                        _a.label = 22;
-                    case 22:
+                        _a.label = 21;
+                    case 21:
                         item.usergroupid = this.sessionInfo.groupid;
                         item.orderType = Props_1.Props.WORKFLOW_ORDER_TYPE[salesData.transkind][0];
                         item.inventLocationId = this.sessionInfo.inventlocationid;
@@ -270,21 +269,29 @@ var WorkflowService = /** @class */ (function () {
                                 salesid: salesData.salesId,
                                 type: salesData.transkind,
                             })];
-                    case 23:
+                    case 22:
                         selectedLines = _a.sent();
                         selectedLinesData = {
                             lines: selectedLines,
                         };
-                        console.log("=======================================", selectedLinesData);
-                        return [3 /*break*/, 25];
-                    case 24:
+                        return [3 /*break*/, 24];
+                    case 23:
                         // console.log(item.statusId);
                         if (status_1 == "accept" || status_1 == null) {
                             if (salesData.transkind == "RETURNORDER") {
                                 console.log("================11111");
-                                if (item.statusId == Props_1.Props.WORKFLOW_STATUSID.PENDINGRMAPPROVAL[0] ||
-                                    item.statusId == Props_1.Props.WORKFLOW_STATUSID.APPROVEDBYDESIGNER[0]) {
-                                    item.statusId = Props_1.Props.WORKFLOW_STATUSID.APPROVEDBYRM[0];
+                                if (salesData.reservation > parseInt(condition.returnOrderDays) &&
+                                    item.statusId != "PENDINGCOORDINATORAPPROVAL") {
+                                    item.statusId = "PENDINGCOORDINATORAPPROVAL";
+                                    if (RM_AND_RA.salescoordinator && RM_AND_RA.salescoordinator != "") {
+                                        item.pendingWith = RM_AND_RA.salescoordinator;
+                                    }
+                                    else {
+                                        throw { status: 0, message: "NO_COORDINATOR_ADDED_TO_YOUR_GROUP_PLEASE_CONTACT_SYSTEM_ADMIN" };
+                                    }
+                                }
+                                else if (item.statusId == "PENDINGRMAPPROVAL" || item.statusId == "APPROVEDBYDESIGNER") {
+                                    item.statusId = "APPROVEDBYRM";
                                     if (RM_AND_RA.ra) {
                                         // console.log(RM_AND_RA);
                                         if (condition.raApprovalRequired) {
@@ -296,22 +303,41 @@ var WorkflowService = /** @class */ (function () {
                                         }
                                     }
                                     else {
-                                        throw { message: "NO_RA_ADDED_TO_YOUR_GROUP_PLEASE_CONTACT_SYSTEM_ADMIN" };
+                                        throw { status: 0, message: "NO_RA_ADDED_TO_YOUR_GROUP_PLEASE_CONTACT_SYSTEM_ADMIN" };
                                     }
                                 }
-                                else if (item.statusId == Props_1.Props.WORKFLOW_STATUSID.PENDINGRAAPPROVAL[0] ||
-                                    item.statusId == Props_1.Props.WORKFLOW_STATUSID.APPROVEDBYRM[0]) {
+                                else if (item.statusId == "PENDINGCOORDINATORAPPROVAL") {
+                                    console.log("PENDINGCOORDINATORAPPROVAL");
+                                    item.statusId = "PENDINGRAAPPROVAL";
+                                    // console.log(item.statusId);
+                                    if (RM_AND_RA.ra) {
+                                        // console.log(RM_AND_RA);
+                                        console.log("PENDINGCOORDINATORAPPROVAL", condition, RM_AND_RA.ra, usergroupid);
+                                        if (condition.raApprovalRequired) {
+                                            item.pendingWith = RM_AND_RA.ra;
+                                        }
+                                        else {
+                                            item.pendingWith = null;
+                                            item.statusId = "APPROVED";
+                                        }
+                                    }
+                                    else {
+                                        throw { status: 0, message: "NO_RA_ADDED_TO_YOUR_GROUP_PLEASE_CONTACT_SYSTEM_ADMIN" };
+                                    }
+                                    console.log(item.statusId);
+                                }
+                                else if (item.statusId == "PENDINGRAAPPROVAL" || item.statusId == "APPROVEDBYRM") {
                                     console.log("====================================");
-                                    item.statusId = Props_1.Props.WORKFLOW_STATUSID.APPROVEDBYRA[0];
+                                    item.statusId = "APPROVEDBYRA";
                                     item.pendingWith = null;
                                 }
-                                else if (item.statusId == Props_1.Props.WORKFLOW_STATUSID.PENDINGINGFORDESIGNERAPPROVAL[0]) {
+                                else if (item.statusId == "PENDINGINGFORDESIGNERAPPROVAL") {
                                     if (condition.rmApprovalRequired) {
-                                        item.statusId = Props_1.Props.WORKFLOW_STATUSID.APPROVEDBYDESIGNER[0];
+                                        item.statusId = "APPROVEDBYDESIGNER";
                                         item.pendingWith = RM_AND_RA.rm;
                                     }
                                     else if (condition.rmApprovalRequired) {
-                                        item.statusId = Props_1.Props.WORKFLOW_STATUSID.APPROVEDBYRA[0];
+                                        item.statusId = "APPROVEDBYRA";
                                         item.pendingWith = RM_AND_RA.ra;
                                     }
                                     else {
@@ -321,9 +347,8 @@ var WorkflowService = /** @class */ (function () {
                                 }
                             }
                             else {
-                                if (item.statusId == Props_1.Props.WORKFLOW_STATUSID.PENDINGRMAPPROVAL[0] ||
-                                    item.statusId == Props_1.Props.WORKFLOW_STATUSID.APPROVEDBYDESIGNER[0]) {
-                                    item.statusId = Props_1.Props.WORKFLOW_STATUSID.APPROVEDBYRM[0];
+                                if (item.statusId == "PENDINGRMAPPROVAL" || item.statusId == "APPROVEDBYDESIGNER") {
+                                    item.statusId = "APPROVEDBYRM";
                                     if (RM_AND_RA.ra) {
                                         item.pendingWith = RM_AND_RA.ra;
                                     }
@@ -332,18 +357,17 @@ var WorkflowService = /** @class */ (function () {
                                         item.statusId = "APPROVED";
                                     }
                                 }
-                                else if (item.statusId == Props_1.Props.WORKFLOW_STATUSID.PENDINGRAAPPROVAL[0] ||
-                                    item.statusId == Props_1.Props.WORKFLOW_STATUSID.APPROVEDBYRM[0]) {
-                                    item.statusId = Props_1.Props.WORKFLOW_STATUSID.APPROVEDBYRA[0];
+                                else if (item.statusId == "PENDINGRAAPPROVAL" || item.statusId == "APPROVEDBYRM") {
+                                    item.statusId = "APPROVEDBYRA";
                                     item.pendingWith = null;
                                 }
-                                else if (item.statusId == Props_1.Props.WORKFLOW_STATUSID.PENDINGINGFORDESIGNERAPPROVAL[0]) {
+                                else if (item.statusId == "PENDINGINGFORDESIGNERAPPROVAL") {
                                     if (RM_AND_RA.rm) {
-                                        item.statusId = Props_1.Props.WORKFLOW_STATUSID.APPROVEDBYDESIGNER[0];
+                                        item.statusId = "APPROVEDBYDESIGNER";
                                         item.pendingWith = RM_AND_RA.rm;
                                     }
                                     else if (RM_AND_RA.ra) {
-                                        item.statusId = Props_1.Props.WORKFLOW_STATUSID.APPROVEDBYRA[0];
+                                        item.statusId = "APPROVEDBYRA";
                                         item.pendingWith = RM_AND_RA.ra;
                                     }
                                     else {
@@ -356,111 +380,126 @@ var WorkflowService = /** @class */ (function () {
                         else if (status_1 == "reject") {
                             console.log("==========================", status_1);
                             if (RM_AND_RA.rm == this.sessionInfo.groupid) {
-                                item.statusId = Props_1.Props.WORKFLOW_STATUSID.REJECTEDBYRM[0];
+                                item.statusId = "REJECTEDBYRM";
                             }
                             else if (RM_AND_RA.ra == this.sessionInfo.groupid) {
-                                item.statusId = Props_1.Props.WORKFLOW_STATUSID.REJECTEDBYRA[0];
+                                item.statusId = "REJECTEDBYRA";
+                            }
+                            else {
+                                item.statusId = "REJECTED";
                             }
                             item.pendingWith = null;
                             // await this.inventryTransUpdate(salesData);
                         }
-                        _a.label = 25;
-                    case 25:
+                        _a.label = 24;
+                    case 24:
+                        // console.log(item);
+                        // throw "error";
                         item.lastModifiedBy = this.sessionInfo.userName;
                         // console.log(new Date());
                         item.lastModifiedDate = new Date(App_1.App.DateNow());
-                        return [4 /*yield*/, this.validate(item)];
-                    case 26:
+                        return [4 /*yield*/, this.validate(item, type)];
+                    case 25:
                         cond = _a.sent();
-                        if (!(cond == true)) return [3 /*break*/, 32];
+                        console.log(cond);
+                        if (!(cond == true)) return [3 /*break*/, 31];
                         salesSaveData = {};
                         salesSaveData.salesId = item.orderId;
                         salesSaveData.status = item.statusId;
+                        salesSaveData.info = info;
                         salesSaveData.lastModifiedDate = new Date(App_1.App.DateNow());
                         console.log("lastModifiedDate", salesSaveData.lastModifiedDate, salesSaveData.status);
                         // promistList.push(this.workflowDAO.save(item), this.salesTableDAO.save(salesSaveData));
                         return [4 /*yield*/, queryRunner.manager.getRepository(Workflow_1.Workflow).save(item)];
-                    case 27:
+                    case 26:
                         // promistList.push(this.workflowDAO.save(item), this.salesTableDAO.save(salesSaveData));
                         _a.sent();
-                        if (!selectedLinesData) return [3 /*break*/, 29];
+                        if (!selectedLinesData) return [3 /*break*/, 28];
                         selectedLinesData.id = item.id;
                         selectedLinesData.updatedOn = new Date(App_1.App.DateNow());
                         selectedLinesData.createdOn = new Date(App_1.App.DateNow());
                         return [4 /*yield*/, queryRunner.manager.getRepository(SelectedLines_1.SelectedLines).save(selectedLinesData)];
-                    case 28:
+                    case 27:
                         _a.sent();
-                        _a.label = 29;
-                    case 29: return [4 /*yield*/, queryRunner.manager.getRepository(SalesTable_1.SalesTable).save(salesSaveData)];
-                    case 30:
+                        _a.label = 28;
+                    case 28: return [4 /*yield*/, queryRunner.manager.getRepository(SalesTable_1.SalesTable).save(salesSaveData)];
+                    case 29:
                         _a.sent();
                         // let salesTableData: any = await this.salesTableDAO.save(salesData);
                         return [4 /*yield*/, queryRunner.commitTransaction()];
-                    case 31:
+                    case 30:
                         // let salesTableData: any = await this.salesTableDAO.save(salesData);
                         _a.sent();
                         return [2 /*return*/, { id: item.id, status: item.statusId, message: "SAVED_SUCCESSFULLY" }];
-                    case 32:
+                    case 31:
                         if (cond == "ALREADY_MODIFIED") {
-                            throw { message: "ALREADY_MODIFIED" };
+                            throw { status: 0, message: "ALREADY_MODIFIED" };
+                        }
+                        else if (cond == "ALREADY_SENT_FOR_APPROVAL") {
+                            throw { status: 0, message: "ALREADY_SENT_FOR_APPROVAL" };
                         }
                         else {
-                            throw { message: "INVALID_DATA" };
+                            throw { status: 0, message: "INVALID_DATA" };
                         }
-                        _a.label = 33;
-                    case 33: return [3 /*break*/, 35];
-                    case 34: throw { message: "INVALID_DATA" };
-                    case 35: return [3 /*break*/, 40];
-                    case 36:
+                        _a.label = 32;
+                    case 32: return [3 /*break*/, 34];
+                    case 33: throw { status: 0, message: "INVALID_DATA" };
+                    case 34: return [3 /*break*/, 39];
+                    case 35:
                         error_3 = _a.sent();
                         return [4 /*yield*/, queryRunner.rollbackTransaction()];
-                    case 37:
+                    case 36:
                         _a.sent();
                         throw error_3;
-                    case 38: return [4 /*yield*/, queryRunner.release()];
-                    case 39:
+                    case 37: return [4 /*yield*/, queryRunner.release()];
+                    case 38:
                         _a.sent();
                         return [7 /*endfinally*/];
-                    case 40: return [2 /*return*/];
+                    case 39: return [2 /*return*/];
                 }
             });
         });
     };
-    WorkflowService.prototype.validate = function (item) {
+    WorkflowService.prototype.validate = function (item, type) {
+        if (type === void 0) { type = null; }
         return __awaiter(this, void 0, void 0, function () {
             var oldItem, uid;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         oldItem = null;
-                        if (!(!item.id || item.id == "" || item.id == "0")) return [3 /*break*/, 1];
-                        item.id = null;
-                        return [3 /*break*/, 3];
-                    case 1: return [4 /*yield*/, this.workflowDAO.findOne({ orderId: item.orderId })];
-                    case 2:
+                        return [4 /*yield*/, this.workflowDAO.findOne({ orderId: item.orderId })];
+                    case 1:
                         oldItem = _a.sent();
+                        if (!item.id || item.id == "" || item.id == "0") {
+                            item.id = null;
+                        }
+                        console.log(oldItem);
                         if (oldItem) {
-                            console.log("=====================", oldItem.pendingWith, this.sessionInfo.groupid);
-                            if (oldItem.pendingWith == this.sessionInfo.groupid) {
-                                item = oldItem;
-                                return [2 /*return*/, true];
+                            if (type == "sendforapproval") {
+                                return [2 /*return*/, "ALREADY_SENT_FOR_APPROVAL"];
                             }
                             else {
-                                return [2 /*return*/, "ALREADY_MODIFIED"];
+                                console.log("=====================", oldItem.pendingWith, this.sessionInfo.groupid);
+                                if (oldItem.pendingWith == this.sessionInfo.groupid) {
+                                    item = oldItem;
+                                    return [2 /*return*/, true];
+                                }
+                                else {
+                                    return [2 /*return*/, "ALREADY_MODIFIED"];
+                                }
                             }
                         }
-                        _a.label = 3;
-                    case 3:
-                        if (!!item.id) return [3 /*break*/, 6];
-                        if (!oldItem) return [3 /*break*/, 4];
+                        if (!!item.id) return [3 /*break*/, 4];
+                        if (!oldItem) return [3 /*break*/, 2];
                         item = oldItem;
                         return [2 /*return*/, true];
-                    case 4: return [4 /*yield*/, this.getWorkflowId()];
-                    case 5:
+                    case 2: return [4 /*yield*/, this.getWorkflowId()];
+                    case 3:
                         uid = _a.sent();
                         item.id = uid;
-                        _a.label = 6;
-                    case 6: return [2 /*return*/, true];
+                        _a.label = 4;
+                    case 4: return [2 /*return*/, true];
                 }
             });
         });
@@ -490,7 +529,7 @@ var WorkflowService = /** @class */ (function () {
                     case 3:
                         _a.sent();
                         return [2 /*return*/, id];
-                    case 4: throw { message: "CANNOT_FIND_SEQUENCE_FORMAT_FROM_NUMBER_SEQUENCE_TABLE" };
+                    case 4: throw { status: 0, message: "CANNOT_FIND_SEQUENCE_FORMAT_FROM_NUMBER_SEQUENCE_TABLE" };
                 }
             });
         });
@@ -528,6 +567,7 @@ var WorkflowService = /** @class */ (function () {
                         return [4 /*yield*/, this.rawQuery.checkBatchAvailability(this.sessionInfo.inventlocationid, items_1, colors_1, sizes_1, batches_1)];
                     case 2:
                         itemsInStock_1 = _a.sent();
+                        console.log(itemsInStock_1);
                         lines.map(function (v) {
                             if (v.itemid != "HSN-00001") {
                                 var index = itemsInStock_1.findIndex(function (value) {
@@ -548,6 +588,7 @@ var WorkflowService = /** @class */ (function () {
                                 }
                             }
                         });
+                        console.log(itemString_1);
                         return [2 /*return*/, canConvert_1];
                     case 3: return [2 /*return*/, true];
                 }
@@ -611,10 +652,11 @@ var WorkflowService = /** @class */ (function () {
     };
     WorkflowService.prototype.workflowUpdate = function (data) {
         return __awaiter(this, void 0, void 0, function () {
-            var salesData, reqData, date, inventtransQuery, salesSaveData, offlineSystems, salesData, reqData, date, inventtransQuery, salesSaveData, salesSaveData;
+            var transkind, salesData, reqData, date, inventtransQuery, salesSaveData, offlineSystems, salesData, reqData, date, inventtransQuery, salesSaveData, salesSaveData;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        transkind = ["SALESORDER", "INVENTORYMOVEMENT", "RETURNORDER"];
                         if (!(data && data.statusid.includes("REJECTED"))) return [3 /*break*/, 13];
                         if (!(process.env.ENV_STORE_ID && data.inventlocationid == process.env.ENV_STORE_ID)) return [3 /*break*/, 5];
                         // console.log("TODO", data.orderid);
@@ -622,16 +664,17 @@ var WorkflowService = /** @class */ (function () {
                         return [4 /*yield*/, this.salesTableDAO.transferorderEntity(data.orderid)];
                     case 1:
                         salesData = _a.sent();
-                        if (!(salesData.transkind == "INVENTORYMOVEMENT")) return [3 /*break*/, 4];
+                        if (!transkind.includes(salesData.transkind)) return [3 /*break*/, 4];
                         reqData = {
                             salesId: data.orderid,
                         };
                         date = new Date().toISOString();
-                        inventtransQuery = "UPDATE inventtrans SET transactionclosed = " + false + ", reserve_status = 'UNRESERVED' ";
+                        inventtransQuery = "UPDATE inventtrans SET transactionclosed = " + false + ", reserve_status = 'REJECTED' ";
                         if (date) {
                             inventtransQuery += ",dateinvent = '" + date + "' ";
                         }
                         inventtransQuery += " WHERE invoiceid = '" + salesData.salesId.toUpperCase() + "'";
+                        console.log(inventtransQuery);
                         return [4 /*yield*/, this.db.query(inventtransQuery)];
                     case 2:
                         _a.sent();
@@ -656,16 +699,17 @@ var WorkflowService = /** @class */ (function () {
                         return [4 /*yield*/, this.salesTableDAO.transferorderEntity(data.orderid)];
                     case 7:
                         salesData = _a.sent();
-                        if (!(salesData.transkind == "INVENTORYMOVEMENT")) return [3 /*break*/, 9];
+                        if (!transkind.includes(salesData.transkind)) return [3 /*break*/, 9];
                         reqData = {
                             salesId: data.orderid,
                         };
                         date = new Date().toISOString();
-                        inventtransQuery = "UPDATE inventtrans SET transactionclosed = " + false + ", reserve_status = 'UNRESERVED' ";
+                        inventtransQuery = "UPDATE inventtrans SET transactionclosed = " + false + ", reserve_status = 'REJECTED' ";
                         if (date) {
                             inventtransQuery += ",dateinvent = '" + date + "' ";
                         }
                         inventtransQuery += " WHERE invoiceid = '" + salesData.salesId.toUpperCase() + "'";
+                        console.log(inventtransQuery);
                         return [4 /*yield*/, this.db.query(inventtransQuery)];
                     case 8:
                         _a.sent();

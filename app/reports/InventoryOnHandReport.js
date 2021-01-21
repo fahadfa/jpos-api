@@ -158,7 +158,7 @@ var InventoryOnHandReport = /** @class */ (function () {
                         if (params.batchno && params.batchCheck) {
                             query = query + (" and LOWER(i.batchno)=LOWER('" + params.batchno + "') ");
                         }
-                        query += " and transactionclosed  = true group by UPPER(i.itemid), UPPER(i.configid), UPPER(i.inventsizeid), i.inventlocationid,\n      bs.namealias, bs.itemname, w.name, w.namealias,  sz.description, sz.\"name\" " + (params.batchCheck ? ", UPPER(i.batchno), b.expdate" : "") + " ) as a where  ";
+                        query += " and transactionclosed  = true and i.itemid not like 'HSN-%' group by UPPER(i.itemid), UPPER(i.configid), UPPER(i.inventsizeid), i.inventlocationid,\n      bs.namealias, bs.itemname, w.name, w.namealias,  sz.description, sz.\"name\" " + (params.batchCheck ? ", UPPER(i.batchno), b.expdate" : "") + " ) as a where  ";
                         if (params.withZero) {
                             query += " (a.availabilty + a.reservedquantity) >= 0 ";
                         }

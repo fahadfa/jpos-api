@@ -47,56 +47,76 @@ var HistoricalTransactionReport = /** @class */ (function () {
     }
     HistoricalTransactionReport.prototype.execute = function (params) {
         return __awaiter(this, void 0, void 0, function () {
-            var id, data_1, salesLine, _a, list, j, chunkArray, olddata, salesTableFromAxpta, salesLinesFromAxpta, workFlowOrder, items, sizes, frominvloc_1, toinvloc_1, query, wquery, names_1, invlocation, from, to, error_1;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            var id, data_1, salesLine, _a, _b, _c, sNo_1, olddata, salesTableFromAxpta, salesLinesFromAxpta, workFlowOrder, items, sizes, frominvloc_1, toinvloc_1, query, wquery, names_1, invlocation, salesLines, from, to, _d, _e, sNo_2, error_1;
+            return __generator(this, function (_f) {
+                switch (_f.label) {
                     case 0:
-                        _b.trys.push([0, 14, , 15]);
+                        _f.trys.push([0, 21, , 22]);
                         id = params.salesId;
-                        if (!id) return [3 /*break*/, 12];
-                        return [4 /*yield*/, this.query_to_data(id)];
+                        if (!id) return [3 /*break*/, 19];
+                        return [4 /*yield*/, this.query_to_data(id, params)];
                     case 1:
-                        data_1 = _b.sent();
-                        console.log("=========================>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", data_1);
-                        if (!(data_1 && data_1.length > 0)) return [3 /*break*/, 7];
+                        data_1 = _f.sent();
+                        if (!(data_1 && data_1.length > 0)) return [3 /*break*/, 9];
                         data_1 = data_1 && data_1.length > 0 ? data_1[0] : {};
                         data_1.lastmodifieddate = App_1.App.convertUTCDateToLocalDate(new Date(data_1.lastmodifieddate), params.timeZoneOffSet);
                         if (!(data_1.transkind == 'DESIGNERSERVICE' || data_1.transkind == 'DESIGNERSERVICERETURN')) return [3 /*break*/, 3];
                         return [4 /*yield*/, this.salesline_query_to_data_designer(id)];
                     case 2:
-                        _a = _b.sent();
+                        _a = _f.sent();
                         return [3 /*break*/, 5];
                     case 3: return [4 /*yield*/, this.salesline_query_to_data(id)];
                     case 4:
-                        _a = _b.sent();
-                        _b.label = 5;
+                        _a = _f.sent();
+                        _f.label = 5;
                     case 5:
                         salesLine = _a;
-                        list = [];
-                        j = 0;
-                        return [4 /*yield*/, this.chunkArray(salesLine, 12)];
+                        _b = data_1;
+                        if (!(data_1.transkind == "SALESORDER" || data_1.transkind == "RETURNORDER")) return [3 /*break*/, 7];
+                        return [4 /*yield*/, this.saleAndReturnOrderLines(data_1, salesLine, params)];
                     case 6:
-                        chunkArray = _b.sent();
-                        list = list.concat(chunkArray);
-                        // console.log("Lines",salesLine)
-                        data_1["salesLine"] = salesLine;
-                        // data.salesLine.shippedDate = data.lastmodifieddate.split(",")[0];
-                        data_1.quantity = 0;
-                        data_1.salesLine.map(function (v, index) {
-                            data_1.salesLine[index].sNo = index + 1;
-                            var quan = data_1.transkind == "INVENTORYMOVEMENT" ? v.actualsalesqty = parseInt(v.actualsalesqty) : v.salesQty;
-                            data_1.quantity += parseInt(quan);
-                        });
-                        data_1.disc = data_1.disc ? data_1.disc : 0;
-                        console.log(data_1.salesLine);
-                        data_1.vat = data_1.salesLine.length > 0 ? parseInt(data_1.salesLine[0].vat) : "-";
-                        return [3 /*break*/, 11];
-                    case 7: return [4 /*yield*/, this.oldDataUrl(params)];
+                        _c = _f.sent();
+                        return [3 /*break*/, 8];
+                    case 7:
+                        _c = salesLine;
+                        _f.label = 8;
                     case 8:
-                        olddata = _b.sent();
+                        _b.salesLine = _c;
+                        // data.salesLine.shippedDate = data.lastmodifieddate.split(",")[0];
+                        console.log(data_1);
+                        data_1.quantity = 0;
+                        if (data_1.transkind !== "SALESORDER" || data_1.transkind !== "RETURNORDER") {
+                            sNo_1 = 1;
+                            console.log("===============Qty================");
+                            data_1.salesLine.map(function (v, index) {
+                                data_1.salesLine[index].sNo = sNo_1++;
+                                // console.table(data.salesLine[index]);
+                                // console.log("salles quantity",v.salesQty)
+                                data_1.salesLine[index].actualsalesqty = parseInt(v.actualsalesqty);
+                                data_1.quantity += parseInt(v.actualsalesqty);
+                                console.log(v.actualsalesqty, v.salesQty, data_1.quantity);
+                                // data.salesLine[index].vatAmount=data.vatamount;
+                            });
+                            console.log("===============Qty closed================");
+                            data_1.vat = data_1.salesLine.length > 0 ? parseInt(data_1.salesLine[0].vat) : "-";
+                            // data.vatAmount=data.vatamount;
+                            // data.vatGrand= data.vatAmount;
+                            params.user ? data_1.user = params.user : null;
+                        }
+                        // console.log(" data.quantity=================>", data.quantity)
+                        data_1.disc = data_1.disc ? data_1.disc : 0;
+                        // console.log(data.salesLine);
+                        data_1.vatGrand = data_1.salesLine.length > 0 ? parseInt(data_1.salesLine[0].vatGrand) : "-";
+                        return [3 /*break*/, 18];
+                    case 9: return [4 /*yield*/, this.oldDataUrl(params)];
+                    case 10:
+                        olddata = _f.sent();
                         data_1 = {};
                         salesTableFromAxpta = olddata.OrderTable && olddata.OrderTable.length > 0 ? olddata.OrderTable[0] : {};
                         salesLinesFromAxpta = olddata.OrderLine && olddata.OrderLine.length > 0 ? olddata.OrderLine : [];
+                        data_1.inventLocationId = salesLinesFromAxpta && salesLinesFromAxpta.length > 0 ?
+                            salesLinesFromAxpta[0].INVENTLOCATIONID : "";
+                        if (!(data_1.inventLocationId == params.inventlocationid)) return [3 /*break*/, 17];
                         data_1.salesId = salesTableFromAxpta.SALESID;
                         data_1.interCompanyOriginalSalesId = salesTableFromAxpta.INTERCOMPANYORIGINALSALESID;
                         data_1.custAccount = salesTableFromAxpta.CUSTACCOUNT;
@@ -108,7 +128,7 @@ var HistoricalTransactionReport = /** @class */ (function () {
                         data_1.transkindAr = workFlowOrder ? workFlowOrder.ar : "";
                         // data.movementtype=salesTableFromAxpta.;
                         // data.movementtypear=salesTableFromAxpta.;
-                        data_1.customername = salesTableFromAxpta.SALESNAME;
+                        data_1.customernamcustomernamee = salesTableFromAxpta.SALESNAME;
                         // data.custmobilenumber=salesTableFromAxpta.;
                         data_1.vatamount = salesTableFromAxpta.SumTax;
                         data_1.netAmount = salesTableFromAxpta.NETAMOUNT;
@@ -123,10 +143,8 @@ var HistoricalTransactionReport = /** @class */ (function () {
                         data_1.paymentType = salesTableFromAxpta.PAYMENT;
                         // data.cphone=salesTableFromAxpta.
                         data_1.createddatetime = salesTableFromAxpta.CREATEDDATETIME;
-                        // data.lastmodifieddate=salesTableFromAxpta.
+                        data_1.lastmodifieddate = data_1.createddatetime;
                         data_1.originalPrinted = true;
-                        data_1.inventLocationId = salesLinesFromAxpta && salesLinesFromAxpta.length > 0 ?
-                            salesLinesFromAxpta[0].INVENTLOCATIONID : "";
                         // data.wnamealias=salesTableFromAxpta.
                         // data.wname=salesTableFromAxpta.
                         // data.twnamealias=salesTableFromAxpta.
@@ -144,25 +162,26 @@ var HistoricalTransactionReport = /** @class */ (function () {
                         data_1.salesman = salesTableFromAxpta.SALESNAME;
                         data_1.deliveryDate = salesTableFromAxpta.DELIVERYDATE;
                         data_1.salesLine = [{}, {}];
-                        if (!(salesLinesFromAxpta && salesLinesFromAxpta.length > 0)) return [3 /*break*/, 11];
+                        if (!(salesLinesFromAxpta && salesLinesFromAxpta.length > 0)) return [3 /*break*/, 16];
                         items = salesLinesFromAxpta.map(function (d) { return "'" + d.ITEMID + "'"; }).join(",");
                         sizes = salesLinesFromAxpta.map(function (d) { return "'" + d.CONFIGID + "'"; }).join(",");
                         frominvloc_1 = salesLinesFromAxpta[0].INVENTLOCATIONID;
                         toinvloc_1 = salesLinesFromAxpta[0].CUSTACCOUNT;
-                        query = "select distinct on (i.id, i.itemid, i.configid, i.inventsizeid, i.batchno)\n                        b.itemid,i.configid ,b.itemname as prodnamear,\n                        b.namealias as prodnameen,\n                        s.description as sizeNameEn,\n                        s.name as sizeNameAr\n                        from inventtrans i\n                        left join inventtable b on i.itemid=b.itemid\n                        left join inventsize s on s.itemid = i.itemid and i.inventsizeid = s.inventsizeid\n                        left join configtable c on c.configid = i.configid and c.itemid = i.itemid\n                        where i.itemid in(" + items + ") and i.configid in(" + sizes + ")";
+                        query = "select distinct on (i.id, i.itemid, i.configid, i.inventsizeid, i.batchno)\n                            b.itemid,i.configid ,b.itemname as prodnamear,\n                            b.namealias as prodnameen,\n                            s.description as sizeNameEn,\n                            s.name as sizeNameAr\n                            from inventtrans i\n                            left join inventtable b on i.itemid=b.itemid\n                            left join inventsize s on s.itemid = i.itemid and i.inventsizeid = s.inventsizeid\n                            left join configtable c on c.configid = i.configid and c.itemid = i.itemid\n                            where i.itemid in(" + items + ") and i.configid in(" + sizes + ")";
                         wquery = "select i.inventlocationid,i.namealias as wnamealias,i.\"name\" as wname from inventlocation i where i.inventlocationid in('" + frominvloc_1 + "','" + toinvloc_1 + "');";
                         console.log(wquery);
                         return [4 /*yield*/, this.db.query(query)];
-                    case 9:
-                        names_1 = _b.sent();
+                    case 11:
+                        names_1 = _f.sent();
                         return [4 /*yield*/, this.db.query(wquery)];
-                    case 10:
-                        invlocation = _b.sent();
+                    case 12:
+                        invlocation = _f.sent();
                         // console.log(items);
                         // console.log(names);
                         // console.log("===================names====================");
                         salesLinesFromAxpta.sort(function (a, b) { return a.LINENUM - b.LINENUM; });
-                        data_1.salesLine = salesLinesFromAxpta.map(function (item, index) {
+                        data_1.vatAmount = data_1.vatamount;
+                        salesLines = salesLinesFromAxpta.map(function (item, index) {
                             var line = {};
                             line.salesid = item.SALESID;
                             line.actualsalesqty = parseInt(item.SALESQTY);
@@ -193,32 +212,132 @@ var HistoricalTransactionReport = /** @class */ (function () {
                             line.vat = parseInt(item.LineSalesTaxPercent);
                             // line.colorant=item.
                             line.linenum = item.LINENUM;
-                            line.sNo = index + 1;
                             return line;
                         });
-                        console.table(invlocation);
                         from = invlocation.find(function (loc) { return loc.inventlocationid == frominvloc_1; });
                         to = invlocation.find(function (loc) { return loc.inventlocationid == toinvloc_1; });
-                        if (from) {
-                            data_1.wnamealias = from.wnamealias;
-                            data_1.wname = from.wname;
-                        }
-                        if (to) {
-                            data_1.twnamealias = to.wnamealias;
-                            data_1.twname = to.wname;
-                        }
-                        _b.label = 11;
-                    case 11:
-                        data_1.disc = data_1.disc ? data_1.disc : '0.00';
-                        data_1.vat = data_1.salesLine.length ? data_1.salesLine[0].vat : 0;
-                        // console.log("=================final review=======================",data)
-                        return [2 /*return*/, data_1];
-                    case 12: throw { message: "Select Invoice ID" };
-                    case 13: return [3 /*break*/, 15];
+                        data_1.lastmodifieddate = App_1.App.convertUTCDateToLocalDate(new Date(data_1.lastmodifieddate), params.timeZoneOffSet);
+                        _d = data_1;
+                        if (!(data_1.transkind == "SALESORDER" || data_1.transkind == "RETURNORDER")) return [3 /*break*/, 14];
+                        return [4 /*yield*/, this.saleAndReturnOrderLines(data_1, salesLines, params, {
+                                from: from,
+                                to: to
+                            })];
+                    case 13:
+                        _e = _f.sent();
+                        return [3 /*break*/, 15];
                     case 14:
-                        error_1 = _b.sent();
+                        _e = salesLines;
+                        _f.label = 15;
+                    case 15:
+                        _d.salesLine = _e;
+                        if (data_1.transkind !== "SALESORDER" || data_1.transkind !== "RETURNORDER") {
+                            sNo_2 = 1;
+                            data_1.salesLine.map(function (v, index) {
+                                data_1.salesLine[index].sNo = sNo_2++;
+                                data_1.quantity += parseInt(v.salesQty);
+                                data_1.vat = data_1.salesLine.length > 0 ? parseInt(data_1.salesLine[0].vat) : "-";
+                            });
+                            params.user ? data_1.user = params.user : null;
+                        }
+                        // let list = []
+                        // let chunkArray: any[] = await this.chunkArray(salesLines, 10);
+                        // list = list.concat(chunkArray);
+                        // let newSalesline: any[] = [];
+                        // let sNo = 1;
+                        // let quantity = 0;
+                        // list.map((val: any) => {
+                        //     data.vat = val.length > 0 ? val[0].vat : "-";
+                        //     console.log("-----------vat--------------", data.vat)
+                        //     val.colorant = val.colorant ? val.colorant : "-";
+                        //     let lines: any = {
+                        //         amount: parseFloat(data.amount).toFixed(2),
+                        //         quantity: 0,
+                        //         netAmount: parseFloat(data.netAmount).toFixed(2),
+                        //         disc: parseFloat(data.disc).toFixed(2),
+                        //         vatamount: parseFloat(data.vatAmount).toFixed(2),
+                        //         shippingamount: parseFloat(data.shippingAmount).toFixed(2),
+                        //         page: 1,
+                        //         totalPages: list.length,
+                        //         voucherdiscchecked: data.voucherdiscchecked,
+                        //         vouchernum: data.vouchernum,
+                        //         salesId: data.salesId,
+                        //         custAccount: data.custAccount,
+                        //         interCompanyOriginalSalesId: data.interCompanyOriginalSalesId,
+                        //         status: data.status,
+                        //         transkind: data.transkind,
+                        //         customername: data.customername,
+                        //         custmobilenumber: data.custmobilenumber,
+                        //         cname: data.cname,
+                        //         cnamealias: data.cnamealias,
+                        //         invoiceAccount: data.invoiceAccount,
+                        //         cphone: data.cphone,
+                        //         createddatetime: data.createddatetime,
+                        //         lastmodifieddate: data.lastmodifieddate,
+                        //         originalPrinted: data.originalPrinted,
+                        //         inventLocationId: data.inventLocationId,
+                        //         wnamealias: data.wnamealias,
+                        //         wname: data.wname,
+                        //         createdby: data.createdby,
+                        //         deliveryaddress: data.deliveryaddress,
+                        //         salesman: data.salesman,
+                        //         notes: data.notes,
+                        //         deliveryDate: data.deliveryDate,
+                        //         isbreak: data.isbreak,
+                        //         vatGrand: data.vatamount,
+                        //         vat: data.vat,
+                        //         paymentType: data.paymentType,
+                        //         shippedDate: data.lastmodifieddate.split(",")[0],
+                        //         paymentMode: data.paymentType == "ONLINE" ? "Online" : data.paymentMode,
+                        //         paymentModeAr: data.paymentType == "ONLINE" ? "عبر الانترنت" : data.paymentMode,
+                        //         cashAmount: data.cashAmount,
+                        //         cardAmount: data.cardAmount,
+                        //         designServiceRedeemAmount: data.designServiceRedeemAmount,
+                        //         redeemAmount: data.redeemAmount,
+                        //         lines: [],
+                        //     };
+                        //     console.table(lines);
+                        //     data.isbreak = val.length > 5 ? true : false;
+                        //     val.map((v: any) => {
+                        //         lines.quantity += parseInt(v.salesQty);
+                        //         v.colorantid = val.colorant;
+                        //         v.sNo = sNo;
+                        //         lines.lines.push(v);
+                        //         sNo += 1;
+                        //     });
+                        //     lines.page = list.indexOf(val) + 1;
+                        //     lines.quantity = lines.quantity + quantity;
+                        //     quantity = lines.quantity;
+                        // if (from) {
+                        //     lines.wnamealias = from.wnamealias;
+                        //     lines.wname = from.wname;
+                        // }
+                        // if (to) {
+                        //     lines.twnamealias = to.wnamealias;
+                        //     lines.twname = to.wname;
+                        // }
+                        //     params.user ? lines.user = params.user : null;
+                        //     newSalesline.push(lines);
+                        // });
+                        // data.salesLine = newSalesline;
+                        // data.salesLine.shippedDate = data.lastmodifieddate.split(",")[0];
+                        // data.quantity = 0;
+                        // data.salesLine.map((v: any) => {
+                        //     data.quantity += parseInt(v.quantity);
+                        // });
+                        data_1.disc = data_1.disc ? data_1.disc : 0;
+                        _f.label = 16;
+                    case 16: return [3 /*break*/, 18];
+                    case 17: throw { message: Props_1.Props.DATA_NOT_FOUND };
+                    case 18: 
+                    // console.log("=================final review=======================",data)
+                    return [2 /*return*/, data_1];
+                    case 19: throw { message: "Select Invoice ID" };
+                    case 20: return [3 /*break*/, 22];
+                    case 21:
+                        error_1 = _f.sent();
                         throw error_1;
-                    case 15: return [2 /*return*/];
+                    case 22: return [2 /*return*/];
                 }
             });
         });
@@ -246,6 +365,105 @@ var HistoricalTransactionReport = /** @class */ (function () {
                         e_1 = _a.sent();
                         throw { message: Props_1.Props.DATA_NOT_FOUND };
                     case 4: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    HistoricalTransactionReport.prototype.saleAndReturnOrderLines = function (data, salesLine, params, inventLocation) {
+        return __awaiter(this, void 0, void 0, function () {
+            var list, j, chunkArray, newSalesline, sNo, quantity;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        list = [];
+                        j = 0;
+                        return [4 /*yield*/, this.chunkArray(salesLine, 10)];
+                    case 1:
+                        chunkArray = _a.sent();
+                        list = list.concat(chunkArray);
+                        console.log(list);
+                        newSalesline = [];
+                        sNo = 1;
+                        quantity = 0;
+                        console.table(data);
+                        list.map(function (val) {
+                            data.vat = val.length > 0 ? val[0].vat : "-";
+                            data.vatAmount = data.vatamount;
+                            val.colorant = val.colorant ? val.colorant : "-";
+                            var lines = {
+                                amount: parseFloat(data.amount).toFixed(2),
+                                quantity: 0,
+                                netAmount: parseFloat(data.netAmount).toFixed(2),
+                                disc: parseFloat(data.disc).toFixed(2),
+                                vatamount: parseFloat(data.vatAmount).toFixed(2),
+                                shippingamount: parseFloat(data.shippingAmount).toFixed(2),
+                                page: 1,
+                                totalPages: list.length,
+                                voucherdiscchecked: data.voucherdiscchecked,
+                                vouchernum: data.vouchernum,
+                                salesId: data.salesId,
+                                custAccount: data.custAccount,
+                                interCompanyOriginalSalesId: data.interCompanyOriginalSalesId,
+                                status: data.status,
+                                transkind: data.transkind,
+                                customername: data.customername,
+                                custmobilenumber: data.custmobilenumber,
+                                cname: data.cname,
+                                cnamealias: data.cnamealias,
+                                invoiceAccount: data.invoiceAccount,
+                                cphone: data.cphone,
+                                createddatetime: data.createddatetime,
+                                lastmodifieddate: data.lastmodifieddate,
+                                originalPrinted: data.originalPrinted,
+                                inventLocationId: data.inventLocationId,
+                                wnamealias: data.wnamealias,
+                                wname: data.wname,
+                                createdby: data.createdby,
+                                deliveryaddress: data.deliveryaddress,
+                                salesman: data.salesman,
+                                notes: data.notes,
+                                deliveryDate: data.deliveryDate,
+                                isbreak: data.isbreak,
+                                vatGrand: data.vatamount,
+                                vat: data.vat,
+                                paymentType: data.paymentType,
+                                shippedDate: data.lastmodifieddate.split(",")[0],
+                                paymentMode: data.paymentType == "ONLINE" ? "Online" : data.paymentMode,
+                                paymentModeAr: data.paymentType == "ONLINE" ? "عبر الانترنت" : data.paymentMode,
+                                cashAmount: data.cashAmount,
+                                cardAmount: data.cardAmount,
+                                designServiceRedeemAmount: data.designServiceRedeemAmount,
+                                redeemAmount: data.redeemAmount,
+                                lines: [],
+                            };
+                            data.isbreak = val.length > 5 ? true : false;
+                            val.map(function (v) {
+                                lines.quantity += parseInt(v.salesQty);
+                                v.colorantid = val.colorant;
+                                v.sNo = sNo;
+                                lines.lines.push(v);
+                                sNo += 1;
+                            });
+                            lines.page = list.indexOf(val) + 1;
+                            lines.quantity = lines.quantity + quantity;
+                            lines.shippingDate = data.lastmodifieddate;
+                            quantity = lines.quantity;
+                            if (inventLocation && inventLocation.from) {
+                                lines.wnamealias = inventLocation.from.wnamealias;
+                                lines.wname = inventLocation.from.wname;
+                            }
+                            if (inventLocation && inventLocation.to) {
+                                lines.twnamealias = inventLocation.to.wnamealias;
+                                lines.twname = inventLocation.to.wname;
+                            }
+                            params.user ? lines.user = params.user : null;
+                            newSalesline.push(lines);
+                        });
+                        // data.salesLine.map((v: any) => {
+                        //     data.quantity += parseInt(v.quantity);
+                        //     data.vat = newSalesline.length > 0 ? parseInt(newSalesline[0].vat) : "-";
+                        // });
+                        return [2 /*return*/, newSalesline];
                 }
             });
         });
@@ -284,7 +502,7 @@ var HistoricalTransactionReport = /** @class */ (function () {
                         };
                         file = FILES[renderData.transkind];
                         file = file ? file : FILES["OTHERS"];
-                        params.user ? renderData.user = params.user : null;
+                        // params.user ? renderData.user = params.user : null;
                         if (renderData.transkind == 'DESIGNERSERVICERETURN') {
                             renderData.isDesignerServiceReturn = true;
                         }
@@ -301,16 +519,21 @@ var HistoricalTransactionReport = /** @class */ (function () {
             });
         });
     };
-    HistoricalTransactionReport.prototype.query_to_data = function (id, inventlocationid) {
+    HistoricalTransactionReport.prototype.query_to_data = function (id, params) {
         return __awaiter(this, void 0, void 0, function () {
             var query;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        query = "\n                select \n                st.salesid as \"salesId\",\n                st.intercompanyoriginalsalesid as \"interCompanyOriginalSalesId\",\n                st.custaccount as \"custAccount\",\n                st.invoiceaccount as \"invoiceAccount\",\n                st.status as status,\n                alt.en as \"transkindEn\",\n                alt.ar as \"transkindAr\",\n                st.transkind as transkind,\n                mt.movementtype as movementtype,\n                mt.movementarabic as movementtypear,\n                st.salesname as customername,\n                st.mobileno as custmobilenumber,\n                to_char(st.vatamount, 'FM999999999990.00')  as vatamount,\n                to_char(st.netamount, 'FM999999999990.00')  as \"netAmount\",\n                to_char(st.disc, 'FM999999999990.00')  as disc,\n                to_char(st.amount , 'FM999999999990.00') as amount,\n                to_char(st.shipping_amount, 'FM999999999990.00') as \"shippingAmount\",\n                to_char(st.lastmodifieddate, 'DD-MM-YYYY') as \"shippingDate\",\n                st.salesname as cname,\n                st.salesname as \"cnamealias\",\n                st.voucherdiscchecked as \"voucherdiscchecked\",\n                st.vouchernum as \"vouchernum\",\n                st.payment_type as \"paymentType\",\n                c.phone as \"cphone\",\n                to_char(st.createddatetime, 'DD-MM-YYYY') as createddatetime,\n                st.lastmodifieddate as lastmodifieddate,\n                st.originalprinted as \"originalPrinted\",\n                st.inventlocationid as \"inventLocationId\",\n                w.namealias as wnamealias,\n                w.name as wname,\n                tw.namealias as twnamealias,\n                tw.name as twname,\n                st.payment as \"paymentMode\",\n                st.iscash as iscash,\n                st.createdby,\n                st.description as notes,\n                to_char(st.cash_amount, 'FM999999999990.00') as \"cashAmount\",\n                to_char(st.card_amount, 'FM999999999990.00') as \"cardAmount\",\n                to_char(st.shipping_amount, 'FM999999999990.00') as \"shippingAmount\",\n                to_char(st.online_amount, 'FM999999999990.00') as \"onlineAmount\",\n                to_char(st.design_service_redeem_amount, 'FM999999999990.00') as \"designServiceRedeemAmount\",\n                to_char(st.redeemptsamt, 'FM999999999990.00') as \"redeemAmount\",\n                coalesce(st.deliveryaddress, ' ') || (' ') || coalesce(st.citycode, ' ') || (' ') || coalesce(st.districtcode, ' ') || (' ') || coalesce(st.country_code, ' ') as deliveryaddress,\n                concat(d.num,' - ', d.description) as salesman,\n                to_char(st.deliverydate, 'DD-MM-YYYY') as \"deliveryDate\"\n                from salestable st \n                left join dimensions d on st.dimension6_ = d.num\n                left join inventlocation w on w.inventlocationid = st.inventlocationid\n                left join inventlocation tw on tw.inventlocationid = st.custaccount\n                left join custtable c on c.accountnum = st.custaccount\n                left join paymterm p on p.paymtermid = st.payment\n                left join app_lang alt on alt.id = st.transkind\n                left join movementtype mt on st.movement_type_id=mt.id\n                where salesid='" + id + "' \n                ";
-                        if (inventlocationid) {
-                            query += "and inventlocationid='" + inventlocationid + "'";
+                        query = "\n                select \n                st.salesid as \"salesId\",\n                st.intercompanyoriginalsalesid as \"interCompanyOriginalSalesId\",\n                st.custaccount as \"custAccount\",\n                st.invoiceaccount as \"invoiceAccount\",\n                st.status as status,\n                alt.en as \"transkindEn\",\n                alt.ar as \"transkindAr\",\n                st.transkind as transkind,\n                mt.movementtype as movementtype,\n                mt.movementarabic as movementtypear,\n                st.salesname as customername,\n                st.mobileno as custmobilenumber,\n                to_char(st.vatamount, 'FM999999999990.00')  as vatamount,\n                to_char(st.netamount, 'FM999999999990.00')  as \"netAmount\",\n                to_char(st.disc, 'FM999999999990.00')  as disc,\n                to_char(st.amount , 'FM999999999990.00') as amount,\n                to_char(st.shipping_amount, 'FM999999999990.00') as \"shippingAmount\",\n                to_char(st.lastmodifieddate, 'DD-MM-YYYY') as \"shippingDate\",\n                st.salesname as cname,\n                st.salesname as \"cnamealias\",\n                st.voucherdiscchecked as \"voucherdiscchecked\",\n                st.vouchernum as \"vouchernum\",\n                st.payment_type as \"paymentType\",\n                c.phone as \"cphone\",\n                to_char(st.createddatetime, 'DD-MM-YYYY') as createddatetime,\n                st.lastmodifieddate as lastmodifieddate,\n                st.originalprinted as \"originalPrinted\",\n                st.inventlocationid as \"inventLocationId\",\n                w.namealias as wnamealias,\n                w.name as wname,\n                tw.namealias as twnamealias,\n                tw.name as twname,\n                st.payment as \"paymentMode\",\n                st.iscash as iscash,\n                st.createdby,\n                st.description as notes,\n                to_char(st.cash_amount, 'FM999999999990.00') as \"cashAmount\",\n                to_char(st.card_amount, 'FM999999999990.00') as \"cardAmount\",\n                to_char(st.shipping_amount, 'FM999999999990.00') as \"shippingAmount\",\n                to_char(st.online_amount, 'FM999999999990.00') as \"onlineAmount\",\n                to_char(st.design_service_redeem_amount, 'FM999999999990.00') as \"designServiceRedeemAmount\",\n                to_char(st.redeemptsamt, 'FM999999999990.00') as \"redeemAmount\",\n                coalesce(st.deliveryaddress, ' ') || (' ') || coalesce(st.citycode, ' ') || (' ') || coalesce(st.districtcode, ' ') || (' ') || coalesce(st.country_code, ' ') as deliveryaddress,\n                concat(d.num,' - ', d.description) as salesman,\n                to_char(st.deliverydate, 'DD-MM-YYYY') as \"deliveryDate\"\n                from salestable st \n                left join dimensions d on st.dimension6_ = d.num\n                left join inventlocation w on w.inventlocationid = st.inventlocationid\n                left join inventlocation tw on tw.inventlocationid = st.custaccount\n                left join custtable c on c.accountnum = st.custaccount or c.accountnum =st.invoiceaccount \n                left join paymterm p on p.paymtermid = st.payment\n                left join app_lang alt on alt.id = st.transkind\n                left join movementtype mt on st.movement_type_id=mt.id\n                where salesid='" + id + "' and\n                CASE\n                when st.transkind= 'SALESORDER' THEN c.walkincustomer ";
+                        if (params && params.defaultcustomerid) {
+                            query += " or c.accountnum ='" + params.defaultcustomerid + "' ";
                         }
+                        query += " else true\n                     END\n                     and\n                (st.transkind in('DESIGNERSERVICE','ORDERRECEIVE','ORDERSHIPMENT','RETURNORDER','SALESORDER','INVENTORYMOVEMENT','DESIGNERSERVICERETURN') )\n                and st.status IN ('PRINTED','POSTED')\n                ";
+                        if (params && params.inventlocationid) {
+                            query += "and st.inventlocationid='" + params.inventlocationid + "'";
+                        }
+                        console.log(query);
                         return [4 /*yield*/, this.db.query(query)];
                     case 1: return [2 /*return*/, _a.sent()];
                 }

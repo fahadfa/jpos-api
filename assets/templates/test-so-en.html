@@ -92,7 +92,7 @@
     }
 
     table.dash {
-      border: 1px dashed #cccccc;
+      /* border: 1px dashed #cccccc; */
       border-collapse: collapse;
     }
 
@@ -410,7 +410,7 @@
         <tr class="tdright">
           <!-- <td rowspan="4">&nbsp;</td> -->
 
-          <td class="tdleft">Cash Amount</td>
+          <td class="tdleft">{{this.paymentMode}} Amount</td>
           <td class="tdleft">{{this.cashAmount}}</td>
           <td class="tdcenter borderNone"></td>
 
@@ -678,7 +678,7 @@
         <tr class="tdright">
           <!-- <td rowspan="4">&nbsp;</td> -->
 
-          <td class="tdleft">Cash Amount</td>
+          <td class="tdleft">{{this.paymentMode}}  Amount</td>
           <td class="tdleft">{{this.cashAmount}}</td>
           <td class="tdcenter borderNone"></td>
 
@@ -727,7 +727,7 @@
         </tr>
       </table>
 
-      {{/each}}
+      {{/each}}paymentMode:
     </section>
 
     {{/unless}}

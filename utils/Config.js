@@ -32,10 +32,10 @@ exports.stageDbOptions = {
     database: "xxxx",
 };
 exports.mailOptions = {
-    host: "smtp.gmail.com",
+    host: "XXX",
     port: 465,
-    user: "jpos@jazeerapaints.com",
-    pass: "J2123@2123",
+    user: "XXXXXX",
+    pass: "XXXXXXX",
 };
 exports.setEnvConfig = function () {
     var envData = process.env.ENV_JPOS;

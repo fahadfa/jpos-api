@@ -49,6 +49,36 @@ var AuthService = /** @class */ (function () {
         console.log(reqData);
         return this.Response(reqData);
     };
+    AuthService.prototype.refreshToken = function (reqData) {
+        return __awaiter(this, void 0, void 0, function () {
+            var responseData, jwtData;
+            return __generator(this, function (_a) {
+                try {
+                    console.log(reqData);
+                    if (!reqData) {
+                        throw { status: 0, message: "Invalid Data" };
+                    }
+                    responseData = {};
+                    jwtData = App_1.App.DecodeJWT(reqData.token);
+                    if (jwtData && jwtData.identity) {
+                        responseData.identity = jwtData.identity;
+                        responseData.access_token = App_1.App.EncodeJWT(responseData);
+                    }
+                    else if (jwtData && jwtData.message) {
+                        throw { status: 0, message: jwtData.message, expiredAt: jwtData.expiredAt };
+                    }
+                    else {
+                        throw { status: 0, message: "Invalid JWT" };
+                    }
+                    return [2 /*return*/, responseData];
+                }
+                catch (error) {
+                    throw error;
+                }
+                return [2 /*return*/];
+            });
+        });
+    };
     AuthService.prototype.reteriveUserDetails = function (accountObj) {
         return __awaiter(this, void 0, void 0, function () {
             var responseData, menuList, salesmanids, wareHouse, wareHouseNamear, wareHouseNameEn, offlineSystems, error_1;

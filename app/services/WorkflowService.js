@@ -129,7 +129,7 @@ var WorkflowService = /** @class */ (function () {
     WorkflowService.prototype.save = function (item, type) {
         if (type === void 0) { type = null; }
         return __awaiter(this, void 0, void 0, function () {
-            var queryRunner, status_1, info, promistList, usergroupid, inventlocationid, selectedLinesData, condition, salesData, RM_AND_RA, canSendForApproval, date, inventtransQuery, selectedLines, cond, salesSaveData, error_3;
+            var queryRunner, status_1, info, promistList, usergroupid, inventlocationid, selectedLinesData, condition, salesData, RM_AND_RA, canSendForApproval, date, inventtransQuery, selectedLines, cond, salesSaveData, statusTest, error_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -142,14 +142,14 @@ var WorkflowService = /** @class */ (function () {
                         _a.sent();
                         _a.label = 3;
                     case 3:
-                        _a.trys.push([3, 35, 37, 39]);
+                        _a.trys.push([3, 36, 38, 40]);
                         status_1 = item.status;
                         info = item.info;
                         promistList = [];
                         usergroupid = this.sessionInfo.groupid;
                         inventlocationid = this.sessionInfo.inventlocationid;
                         selectedLinesData = null;
-                        if (!(item.id || item.orderId)) return [3 /*break*/, 33];
+                        if (!(item.id || item.orderId)) return [3 /*break*/, 34];
                         if (!item.id) return [3 /*break*/, 5];
                         return [4 /*yield*/, this.workflowDAO.entity(item.id)];
                     case 4:
@@ -327,7 +327,7 @@ var WorkflowService = /** @class */ (function () {
                                     console.log(item.statusId);
                                 }
                                 else if (item.statusId == "PENDINGRAAPPROVAL" || item.statusId == "APPROVEDBYRM") {
-                                    console.log("====================================");
+                                    console.log("================PENDINGRAAPPROVAL====================");
                                     item.statusId = "APPROVEDBYRA";
                                     item.pendingWith = null;
                                 }
@@ -351,11 +351,13 @@ var WorkflowService = /** @class */ (function () {
                                     item.statusId = "APPROVEDBYRM";
                                     if (RM_AND_RA.ra) {
                                         item.pendingWith = RM_AND_RA.ra;
+                                        item.pendingWithDept = "PENDINGRAAPPROVAL";
                                     }
                                     else {
                                         item.pendingWith = null;
                                         item.statusId = "APPROVED";
                                     }
+                                    console.log("============11111111111111=========================", item);
                                 }
                                 else if (item.statusId == "PENDINGRAAPPROVAL" || item.statusId == "APPROVEDBYRM") {
                                     item.statusId = "APPROVEDBYRA";
@@ -365,16 +367,19 @@ var WorkflowService = /** @class */ (function () {
                                     if (RM_AND_RA.rm) {
                                         item.statusId = "APPROVEDBYDESIGNER";
                                         item.pendingWith = RM_AND_RA.rm;
+                                        item.pendingWithDept = "PENDINGRMAPPROVAL";
                                     }
                                     else if (RM_AND_RA.ra) {
                                         item.statusId = "APPROVEDBYRA";
                                         item.pendingWith = RM_AND_RA.ra;
+                                        item.pendingWithDept = "PENDINGRAAPPROVAL";
                                     }
                                     else {
                                         item.statusId = "APPROVED";
                                         item.pendingWith = null;
                                     }
                                 }
+                                // console.log("============accept last=========================", item)
                             }
                         }
                         else if (status_1 == "reject") {
@@ -402,7 +407,7 @@ var WorkflowService = /** @class */ (function () {
                     case 25:
                         cond = _a.sent();
                         console.log(cond);
-                        if (!(cond == true)) return [3 /*break*/, 31];
+                        if (!(cond == true)) return [3 /*break*/, 32];
                         salesSaveData = {};
                         salesSaveData.salesId = item.orderId;
                         salesSaveData.status = item.statusId;
@@ -430,8 +435,14 @@ var WorkflowService = /** @class */ (function () {
                     case 30:
                         // let salesTableData: any = await this.salesTableDAO.save(salesData);
                         _a.sent();
-                        return [2 /*return*/, { id: item.id, status: item.statusId, message: "SAVED_SUCCESSFULLY" }];
+                        console.log("INVENTLOCATION================>", item.inventLocationId);
+                        statusTest = item.id ? item.statusId + "-" + item.id : item.statusId;
+                        console.log("--------workflow at mail caliing------------>", statusTest);
+                        return [4 /*yield*/, this.sendEmailsToGroup(item.inventLocationId, statusTest, item)];
                     case 31:
+                        _a.sent();
+                        return [2 /*return*/, { id: item.id, status: item.statusId, message: "SAVED_SUCCESSFULLY" }];
+                    case 32:
                         if (cond == "ALREADY_MODIFIED") {
                             throw { status: 0, message: "ALREADY_MODIFIED" };
                         }
@@ -441,21 +452,21 @@ var WorkflowService = /** @class */ (function () {
                         else {
                             throw { status: 0, message: "INVALID_DATA" };
                         }
-                        _a.label = 32;
-                    case 32: return [3 /*break*/, 34];
-                    case 33: throw { status: 0, message: "INVALID_DATA" };
-                    case 34: return [3 /*break*/, 39];
-                    case 35:
+                        _a.label = 33;
+                    case 33: return [3 /*break*/, 35];
+                    case 34: throw { status: 0, message: "INVALID_DATA" };
+                    case 35: return [3 /*break*/, 40];
+                    case 36:
                         error_3 = _a.sent();
                         return [4 /*yield*/, queryRunner.rollbackTransaction()];
-                    case 36:
+                    case 37:
                         _a.sent();
                         throw error_3;
-                    case 37: return [4 /*yield*/, queryRunner.release()];
-                    case 38:
+                    case 38: return [4 /*yield*/, queryRunner.release()];
+                    case 39:
                         _a.sent();
                         return [7 /*endfinally*/];
-                    case 39: return [2 /*return*/];
+                    case 40: return [2 /*return*/];
                 }
             });
         });
@@ -499,7 +510,9 @@ var WorkflowService = /** @class */ (function () {
                         uid = _a.sent();
                         item.id = uid;
                         _a.label = 4;
-                    case 4: return [2 /*return*/, true];
+                    case 4:
+                        console.log("====================valid================", item);
+                        return [2 /*return*/, true];
                 }
             });
         });
@@ -742,6 +755,42 @@ var WorkflowService = /** @class */ (function () {
                         _a.sent();
                         _a.label = 15;
                     case 15: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    WorkflowService.prototype.sendEmailsToGroup = function (invent, statusSubject, data) {
+        return __awaiter(this, void 0, void 0, function () {
+            var emails, status, nextstatus, _a, promises;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0: return [4 /*yield*/, this.rawQuery.getUserswithInventLocation(invent)];
+                    case 1:
+                        emails = _b.sent();
+                        console.log(data.statusId, data.pendingWithDept);
+                        return [4 /*yield*/, this.rawQuery.getAppLangName(data.statusId)];
+                    case 2:
+                        status = _b.sent();
+                        if (!data.pendingWithDept) return [3 /*break*/, 4];
+                        return [4 /*yield*/, this.rawQuery.getAppLangName(data.pendingWithDept)];
+                    case 3:
+                        _a = _b.sent();
+                        return [3 /*break*/, 5];
+                    case 4:
+                        _a = null;
+                        _b.label = 5;
+                    case 5:
+                        nextstatus = _a;
+                        console.log(status, nextstatus);
+                        data.status = nextstatus ? status.en + " and " + nextstatus.en : status.en;
+                        console.log(data.status);
+                        promises = [];
+                        emails.forEach(function (mailobj) {
+                            promises.push(App_1.App.SendMail(mailobj.email, statusSubject, "workflowstatusemail", data));
+                        });
+                        console.log("promises", promises);
+                        return [4 /*yield*/, Promise.all(promises)];
+                    case 6: return [2 /*return*/, _b.sent()];
                 }
             });
         });

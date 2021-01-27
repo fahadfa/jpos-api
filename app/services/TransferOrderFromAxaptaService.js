@@ -175,7 +175,7 @@ var TransferOrderFromAxaptaService = /** @class */ (function () {
                         salesData.status = 1;
                         // return { message: Props.SAVED_SUCCESSFULLY };
                         return [2 /*return*/, salesData];
-                    case 3: throw { status: 1, message: "INVOICE_ID_NOT_RELATED_TO_THIS_STORE" };
+                    case 3: throw { status: 0, message: "INVOICE_ID_NOT_RELATED_TO_THIS_STORE" };
                     case 4: return [3 /*break*/, 6];
                     case 5:
                         error_2 = _b.sent();

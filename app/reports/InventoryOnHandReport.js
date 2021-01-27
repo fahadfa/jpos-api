@@ -45,11 +45,15 @@ var InventoryOnHandReport = /** @class */ (function () {
     }
     InventoryOnHandReport.prototype.execute = function (params) {
         return __awaiter(this, void 0, void 0, function () {
-            var data, i, sum, totalAvailability, _i, data_1, item, result;
+            var internet, data, i, sum, totalAvailability, _i, data_1, item, result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.query_to_data(params)];
+                    case 0: return [4 /*yield*/, App_1.App.checkInternet()];
                     case 1:
+                        internet = _a.sent();
+                        console.log(this.sessionInfo);
+                        return [4 /*yield*/, this.query_to_data(params, internet)];
+                    case 2:
                         data = _a.sent();
                         i = 1;
                         sum = 0;
@@ -117,7 +121,7 @@ var InventoryOnHandReport = /** @class */ (function () {
             });
         });
     };
-    InventoryOnHandReport.prototype.query_to_data = function (params) {
+    InventoryOnHandReport.prototype.query_to_data = function (params, isInternet) {
         return __awaiter(this, void 0, void 0, function () {
             var query, warehouseQuery, regionalWarehouses, inQueryStr_1;
             return __generator(this, function (_a) {

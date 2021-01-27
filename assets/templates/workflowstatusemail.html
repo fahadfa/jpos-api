@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Worflow Status</title>
+  </head>
+
+  <body>
+    <p>Hi Team</p>
+    Workflow ( {{data.id}} ) for Transaction ({{data.orderId}}) is 
+    {{data.status}}
+     <!-- has been {{data.statusId}} {{data.pendingWithDept}} -->
+    <!-- approved by 
+    Regional Manager 
+    and pending for Sales Co-Ordinator approval.  -->
+    <br />
+    <br />
+    Workflow ID :{{data.id}}<br />
+    Transaction ID :{{data.orderId}} <br>
+    {{# if data.partyId}}
+    Customer Id : {{data.partyId}}-({{data.partyName}})
+    {{/if}}
+    
+    <br/><br/>
+
+    For any Queries reach out to IT Team.<br /><br />
+
+    Thanks, <br />
+    JPOS.
+  </body>
+</html>

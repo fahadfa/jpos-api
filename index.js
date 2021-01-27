@@ -68,16 +68,22 @@ var run = function () { return __awaiter(_this, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                _a.trys.push([0, 3, , 4]);
+                _a.trys.push([0, 4, , 5]);
                 Log_1.log.log(Config.dbOptions);
-                if (!(!conn || !conn.isConnected)) return [3 /*break*/, 2];
+                if (!(!conn || !conn.isConnected)) return [3 /*break*/, 3];
                 Watcher_1.WatcherInit();
                 console.table(Config.dbOptions);
                 return [4 /*yield*/, typeorm_1.createConnection(Config.dbOptions)];
             case 1:
                 conn = _a.sent();
-                _a.label = 2;
+                Log_1.log.debug("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+                return [4 /*yield*/, Config.DbEnvConfig()];
             case 2:
+                _a.sent();
+                Log_1.log.debug("DbEnvConfig Completed");
+                Log_1.log.debug("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+                _a.label = 3;
+            case 3:
                 Log_1.log.debug(" ************************************** " + conn.isConnected);
                 if (conn && conn.isConnected) {
                     appExpress = new AppExpress_1.default();
@@ -112,8 +118,8 @@ var run = function () { return __awaiter(_this, void 0, void 0, function () {
                         });
                     }); });
                 }
-                return [3 /*break*/, 4];
-            case 3:
+                return [3 /*break*/, 5];
+            case 4:
                 error_1 = _a.sent();
                 Log_1.log.error(error_1);
                 setTimeout(function () {
@@ -126,8 +132,8 @@ var run = function () { return __awaiter(_this, void 0, void 0, function () {
                         Log_1.log.error(error_1);
                     }
                 }, 5000);
-                return [3 /*break*/, 4];
-            case 4: return [2 /*return*/];
+                return [3 /*break*/, 5];
+            case 5: return [2 /*return*/];
         }
     });
 }); };

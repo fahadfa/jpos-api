@@ -101,6 +101,7 @@ var ReturnOrderAmountService = /** @class */ (function () {
                                 var parentItem = reqData.selectedBatches.find(function (j) { return j.linkId == v.linkId && v.isItemFree == false; });
                                 if (!parentItem) {
                                     var line = salesLine_2.find(function (j) { return j.linkId == v.linkId && j.isItemFree == false && j.isParent == true; });
+                                    console.log(line);
                                     reqData.selectedBatches.push({
                                         itemid: line.itemid,
                                         qty: line.salesQty,

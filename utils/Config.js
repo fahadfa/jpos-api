@@ -80,4 +80,22 @@ exports.setStagingConfig = function () {
         console.error(error);
     }
 };
+export let DbEnvConfig = async () => {
+  mailOptions = await RawQuery.ConstData("MAIL");
+  let redeem = await RawQuery.ConstData("REDEEM_POS");
+  let ecommerce = await RawQuery.ConstData("ECOMMERCE_PAYMENT");
+  let syncApi = await RawQuery.ConstData("SYNC_ADMIN_API");
+  let token = await RawQuery.ConstData("TOKEN");
+  let testStoreIds = await RawQuery.ConstData("OFFLINE_STORES");
+
+  Props.AXAPTA_URL = redeem.url;
+  Props.REDEEM_URL = redeem.url + "Authenticate";
+  Props.REDEEM_CLIENT_ID = redeem.username;
+  Props.REDEEM_CLIENT_SECRET = redeem.password;
+  Props.ECOMMERCE_PAYMENT_URL = ecommerce.url;
+  Props._URL = syncApi.url;
+  Props._TOKEN = token.token;
+  Props.EXPIRE_TIME = token.expiresAt;
+  Props.testStoreIds = testStoreIds.data;
+};
 

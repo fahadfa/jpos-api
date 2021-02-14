@@ -138,27 +138,27 @@ exports.setStagingConfig = function () {
     }
 };
 exports.DbEnvConfig = function () { return __awaiter(_this, void 0, void 0, function () {
-    var redeem, ecommerce, syncApi, token, testStoreIds;
+    var redeem, ecommerce, syncApi, token, testStoreIds, smsCred;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, RawQuery_1.RawQuery.ConstData("MAIL")];
+            case 0: return [4 /*yield*/, RawQuery_1.RawQuery.ConstData("REDEEM_POS")];
             case 1:
-                exports.mailOptions = _a.sent();
-                return [4 /*yield*/, RawQuery_1.RawQuery.ConstData("REDEEM_POS")];
-            case 2:
                 redeem = _a.sent();
                 return [4 /*yield*/, RawQuery_1.RawQuery.ConstData("ECOMMERCE_PAYMENT")];
-            case 3:
+            case 2:
                 ecommerce = _a.sent();
                 return [4 /*yield*/, RawQuery_1.RawQuery.ConstData("SYNC_ADMIN_API")];
-            case 4:
+            case 3:
                 syncApi = _a.sent();
                 return [4 /*yield*/, RawQuery_1.RawQuery.ConstData("TOKEN")];
-            case 5:
+            case 4:
                 token = _a.sent();
                 return [4 /*yield*/, RawQuery_1.RawQuery.ConstData("OFFLINE_STORES")];
-            case 6:
+            case 5:
                 testStoreIds = _a.sent();
+                return [4 /*yield*/, RawQuery_1.RawQuery.ConstData("SMS")];
+            case 6:
+                smsCred = _a.sent();
                 Props_1.Props.AXAPTA_URL = redeem.url;
                 Props_1.Props.REDEEM_URL = redeem.url + "Authenticate";
                 Props_1.Props.REDEEM_CLIENT_ID = redeem.username;
@@ -168,7 +168,32 @@ exports.DbEnvConfig = function () { return __awaiter(_this, void 0, void 0, func
                 Props_1.Props._TOKEN = token.token;
                 Props_1.Props.EXPIRE_TIME = token.expiresAt;
                 Props_1.Props.testStoreIds = testStoreIds.data;
+                Props_1.Props.SMS_USER = smsCred.user;
+                Props_1.Props.SMS_PASS = smsCred.pass;
+                return [4 /*yield*/, RawQuery_1.RawQuery.ConstData("MAIL")];
+            case 7:
+                exports.mailOptions = _a.sent();
+                return [4 /*yield*/, RawQuery_1.RawQuery.ConstData("SALES_CHECK")];
+            case 8:
+                exports.SALES_CHECK = _a.sent();
+                console.log(exports.SALES_CHECK);
                 return [2 /*return*/];
         }
     });
 }); };
+exports.SALES_CHECK = {
+    SYNC_SALES: "select * from sync_sales_check ss where ss.id = 'XXXX-XXXX' ",
+    KEYS: [
+        "SALESORDER",
+        "INVENTORYMOVEMENT",
+        "RETURNORDER",
+        "ORDERRECEIVE",
+        "ORDERSHIPMENT",
+        "DESIGNERSERVICE",
+        "DESIGNERSERVICERETURN",
+    ],
+    POSTED: "select  transkind, count(1),  inventlocationid from salestable  where syncstatus in (0,2) and inventlocationid = 'XXXX-XXXX' and status in ( 'POSTED', 'PRINTED') and transkind in ( 'SALESORDER', 'INVENTORYMOVEMENT', 'RETURNORDER', 'ORDERRECEIVE', 'ORDERSHIPMENT', 'DESIGNERSERVICE', 'DESIGNERSERVICERETURN') and lastmodifieddate <= 'YYYY-MM-DDTHH:mm:SS' group by  transkind, inventlocationid order by  inventlocationid, transkind",
+    NOT_POSTED: "select  transkind, count(1),  inventlocationid from salestable  where syncstatus in (0,2) and inventlocationid = 'XXXX-XXXX' and status NOT in ( 'POSTED', 'PRINTED') and transkind in ( 'SALESORDER', 'INVENTORYMOVEMENT', 'RETURNORDER', 'ORDERRECEIVE', 'ORDERSHIPMENT', 'DESIGNERSERVICE', 'DESIGNERSERVICERETURN') and lastmodifieddate <= 'YYYY-MM-DDTHH:mm:SS' group by  transkind, inventlocationid order by  inventlocationid, transkind",
+    SALES_LINES: "select  'LINES', count(1),  inventlocationid from salesline  where  inventlocationid = 'XXXX-XXXX' and status in ('POSTED', 'PRINTED') and lastmodifieddate <= 'YYYY-MM-DDTHH:mm:SS' group by  inventlocationid order by  inventlocationid",
+};
+

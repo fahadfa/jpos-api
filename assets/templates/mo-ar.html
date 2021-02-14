@@ -114,6 +114,13 @@
               <td>:</td>
               <td>{{salesName}}</td>
             </tr>
+            {{#if custAccount}}
+            <tr class="billing">
+              <td valign="top">رقم العميل</td>
+              <td valign="top">:</td>
+              <td>{{custAccount}}</td>
+            </tr>
+            {{/if}}
           </table>
         </td>
         <td width="20%" style="text-align: center">
@@ -151,11 +158,11 @@
               <td>:</td>
               <td class="quotation-date">{{movementTypeAr}}</td>
             </tr>
-            {{#if custAccount}}
+            {{#if invoiceAccount}}
             <tr class="billing">
-              <td class="quotation-date">customer Id</td>
+              <td class="quotation-date">اسم العميل</td>
               <td>:</td>
-              <td class="quotation-date">{{custAccount}}</td>
+              <td class="quotation-date">{{invoiceAccount}}</td>
             </tr>
             {{/if}}
           </table>

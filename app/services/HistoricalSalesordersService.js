@@ -91,7 +91,6 @@ var HistoricalSalesordersService = /** @class */ (function () {
                         salesData = _a.sent();
                         return [4 /*yield*/, this.getreturnOrders(salesId)];
                     case 6:
-                        // return salesData;
                         returnOrdersData = _a.sent();
                         return [4 /*yield*/, this.mapReturnOrderData(returnOrdersData.creditNotes, salesId)];
                     case 7:
@@ -160,7 +159,6 @@ var HistoricalSalesordersService = /** @class */ (function () {
                         salesData_1.priceGroupId = data.PRICEGROUPID;
                         salesData_1.shippingDateConfirmed = data.SHIPPINGDATEREQUESTED;
                         salesData_1.deliveryStreet = data.DELIVERYSTREET;
-                        salesData_1.salesType = data.SALESTYPE;
                         salesData_1.salesStatus = data.SALESSTATUS;
                         salesData_1.numberSequenceGroup = data.NUMBERSEQUENCEGROUP;
                         salesData_1.cashDisc = data.CASHDISC;
@@ -226,7 +224,6 @@ var HistoricalSalesordersService = /** @class */ (function () {
                                 salesLine.dataareaid = salesData_1.dataareaid;
                                 salesLine.recversion = v.RECVERSION;
                                 salesLine.recid = v.RECID;
-                                console.log(salesLine.recid);
                                 salesLine.custGroup = v.CUSTGROUP;
                                 salesLine.custAccount = v.CUSTACCOUNT;
                                 salesLine.inventsizeid = v.INVENTSIZEID;
@@ -290,9 +287,7 @@ var HistoricalSalesordersService = /** @class */ (function () {
                                 salesLine.appliedDiscounts = [];
                                 // CALUCULATIONS:
                                 if (v.INVENTTRANSID && v.INVENTTRANSID != "" && v.INVENTTRANSID != "empty") {
-                                    // console.log(v.INVENTTRANSID);
                                     var colorantdata = data.salesLine.find(function (u) { return u.ITEMID == "HSN-00001" && u.CONFIGID == v.INVENTTRANSID && u.SALESQTY == v.SALESQTY; });
-                                    // console.log(colorantdata.LINENUM);
                                     if (colorantdata) {
                                         salesLine.colorantprice = colorantdata.SALESPRICE;
                                         salesLine.lineSalesTax += parseFloat(colorantdata.LineSalesTax);
@@ -319,7 +314,6 @@ var HistoricalSalesordersService = /** @class */ (function () {
                             return __generator(this, function (_a) {
                                 switch (_a.label) {
                                     case 0:
-                                        // console.log(line.instantDisc);
                                         if (line.InteriorExteriorAmount && line.InteriorExteriorAmount > 0) {
                                             line.appliedDiscounts.push({
                                                 discountType: "INTERIOR_AND_EXTERIOR",
@@ -402,8 +396,7 @@ var HistoricalSalesordersService = /** @class */ (function () {
                                                 line.PromotionDiscEqualRecId && line.PromotionDiscEqualRecId == "empty"
                                                     ? line.recid
                                                     : line.PromotionDiscEqualRecId;
-                                            console.log(line.recid, line.PromotionDiscEqual);
-                                            line.isItemFree = line.PromotionDiscEqualRecId ? true : false;
+                                            line.isItemFree = line.PromotionDiscEqualRecId && line.PromotionDiscEqualRecId != "empty" ? true : false;
                                             line.isParent = line.isItemFree ? false : true;
                                             line.appliedDiscounts.push({
                                                 discountType: "BUY_ONE_GET_ONE_DISCOUNT",
@@ -473,10 +466,8 @@ var HistoricalSalesordersService = /** @class */ (function () {
                         batches = item.batches;
                         delete item.batches;
                         batches.salesLineId = item.id;
-                        // await this.salesLineDAO.save(item);
                         return [4 /*yield*/, queryRunner.manager.getRepository(SalesLine_1.SalesLine).save(item)];
                     case 5:
-                        // await this.salesLineDAO.save(item);
                         _a.sent();
                         return [4 /*yield*/, queryRunner.manager.getRepository(InventTrans_1.Inventorytrans).save(batches)];
                     case 6:
@@ -487,9 +478,7 @@ var HistoricalSalesordersService = /** @class */ (function () {
                         return [3 /*break*/, 4];
                     case 8: return [2 /*return*/, { status: 1, id: salesData.salesId, message: "SAVED_SUCCESSFULLY" }];
                     case 9: return [3 /*break*/, 11];
-                    case 10:
-                        console.log("error");
-                        throw { status: 0, message: "INVOICE_ID_NOT_RELATED_TO_THIS_STORE" };
+                    case 10: throw { status: 0, message: "INVOICE_ID_NOT_RELATED_TO_THIS_STORE" };
                     case 11: return [3 /*break*/, 13];
                     case 12:
                         error_3 = _a.sent();
@@ -507,9 +496,7 @@ var HistoricalSalesordersService = /** @class */ (function () {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         url = Props_1.Props._URL + "salesorder";
-                        console.log("axpta url :  ", url);
                         this.axios.defaults.headers["Authorization"] = Props_1.Props._TOKEN;
-                        console.log(this.axios.defaults.headers);
                         reqData = {
                             data: {
                                 orderId: salesId,
@@ -518,7 +505,6 @@ var HistoricalSalesordersService = /** @class */ (function () {
                         return [4 /*yield*/, this.axios.post(url, reqData)];
                     case 1:
                         data = _a.sent();
-                        console.log(Object.keys(data));
                         data = data.data;
                         if (data.error) {
                             throw data.error.message;
@@ -529,8 +515,6 @@ var HistoricalSalesordersService = /** @class */ (function () {
                         return [3 /*break*/, 3];
                     case 2:
                         error_4 = _a.sent();
-                        // console.log(Object.keys(error));
-                        // console.log(error.response.data.Message);
                         throw { status: 0, message: "INVALID_SALES_ID" };
                     case 3: return [2 /*return*/];
                 }
@@ -545,9 +529,7 @@ var HistoricalSalesordersService = /** @class */ (function () {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         url = Props_1.Props._URL + "returnorders";
-                        console.log("axpta url :  ", url);
                         this.axios.defaults.headers["Authorization"] = Props_1.Props._TOKEN;
-                        console.log(this.axios.defaults.headers);
                         reqData = {
                             data: {
                                 salesId: salesId,
@@ -556,7 +538,6 @@ var HistoricalSalesordersService = /** @class */ (function () {
                         return [4 /*yield*/, this.axios.post(url, reqData)];
                     case 1:
                         data = _a.sent();
-                        console.log(Object.keys(data));
                         data = data.data;
                         if (data.error) {
                             throw data.error.message;
@@ -567,8 +548,6 @@ var HistoricalSalesordersService = /** @class */ (function () {
                         return [3 /*break*/, 3];
                     case 2:
                         error_5 = _a.sent();
-                        // console.log(Object.keys(error));
-                        // console.log(error.response.data.Message);
                         throw { status: 0, message: "INVALID_SALES_ID" };
                     case 3: return [2 /*return*/];
                 }
@@ -589,7 +568,6 @@ var HistoricalSalesordersService = /** @class */ (function () {
                         item = data_1[_i];
                         item.salesLine = item.Lines;
                         delete item.Lines;
-                        console.log(item.salesLine);
                         return [4 /*yield*/, this.mapSalesData(item, salesId, "RETURNORDER")];
                     case 2:
                         returnOrder = _a.sent();
@@ -612,7 +590,6 @@ var HistoricalSalesordersService = /** @class */ (function () {
                         _a.trys.push([0, 2, , 3]);
                         token = void 0;
                         url = Props_1.Props.REDEEM_URL + "?clientId=" + Props_1.Props.REDEEM_CLIENT_ID + "&clientSecret=" + Props_1.Props.REDEEM_CLIENT_SECRET;
-                        console.log(url);
                         return [4 /*yield*/, this.axios.post(url)];
                     case 1:
                         data = _a.sent();

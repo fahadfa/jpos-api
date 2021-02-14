@@ -426,7 +426,7 @@ var RawQuery = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        query = "\n    select transrefid, itemid, sum(qty) as quantity, configid as \"configId\", inventsizeid, batchno from inventtrans \n    where transrefid = '" + data + "'\n    group by itemid, configid, inventsizeid, batchno, transrefid\n    ";
+                        query = "\n    select transrefid, itemid, sum(qty) as quantity, configid as \"configId\", inventsizeid, batchno from inventtrans \n    where transrefid = '" + data + "' and reserve_status !='REJECTED'\n    group by itemid, configid, inventsizeid, batchno, transrefid\n    ";
                         return [4 /*yield*/, this.db.query(query)];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
@@ -953,7 +953,7 @@ var RawQuery = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        query = "select \n            statusid as status from workflow\n            where orderid= '" + salesid + "' limit 1";
+                        query = "select \n            statusid as status, selected_lines as \"salesTable\" from workflow\n            where orderid= '" + salesid + "' limit 1";
                         return [4 /*yield*/, this.db.query(query)];
                     case 1:
                         data = _a.sent();
@@ -1640,20 +1640,40 @@ var RawQuery = /** @class */ (function () {
             });
         });
     };
-    RawQuery.prototype.getUserswithInventLocation = function (inventlocation) {
+    RawQuery.prototype.getUserswithGroupid = function (groupid) {
         return __awaiter(this, void 0, void 0, function () {
             var query, data, err_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        query = "select ui.email from usergroupconfig ugc \n      left join user_info ui on ui.groupid = ugc.usergroupid\n      where \n      ugc.inventlocationid ='" + inventlocation + "' and\n      ui.status ILIKE 'active'\n      group by ui.email;";
+                        query = "select distinct ui.email from usergroupconfig ugc \n      left join user_info ui on ui.groupid = ugc.usergroupid\n      where \n      ugc.usergroupid ='" + groupid + "' and\n      ui.status ILIKE '%active%'\n      group by ui.email;";
                         return [4 /*yield*/, this.db.query(query)];
                     case 1:
                         data = _a.sent();
                         return [2 /*return*/, data];
                     case 2:
                         err_2 = _a.sent();
+                        return [2 /*return*/, Promise.resolve([])];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    RawQuery.prototype.getUserswithInventLocation = function (inventlocation) {
+        return __awaiter(this, void 0, void 0, function () {
+            var query, data, err_3;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        query = "select distinct ui.email from usergroupconfig ugc \n      left join user_info ui on ui.groupid = ugc.usergroupid\n      where \n      ugc.inventlocationid ='" + inventlocation + "' and\n      ui.status ILIKE '%active%'\n      group by ui.email;";
+                        return [4 /*yield*/, this.db.query(query)];
+                    case 1:
+                        data = _a.sent();
+                        return [2 /*return*/, data];
+                    case 2:
+                        err_3 = _a.sent();
                         return [2 /*return*/, Promise.resolve([])];
                     case 3: return [2 /*return*/];
                 }

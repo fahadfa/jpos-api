@@ -208,7 +208,19 @@ var App = /** @class */ (function () {
     //     });
     // }
     App.EncodeJWT = function (data) {
-        return jwt.sign(data, Props_1.Props._TOKEN, { expiresIn: Props_1.Props.EXPIRE_TIME });
+        return __awaiter(this, void 0, void 0, function () {
+            var token;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, RawQuery_1.RawQuery.ConstData("TOKEN")];
+                    case 1:
+                        token = _a.sent();
+                        Props_1.Props._TOKEN = token.token;
+                        Props_1.Props.EXPIRE_TIME = token.expiresAt;
+                        return [2 /*return*/, jwt.sign(data, Props_1.Props._TOKEN, { expiresIn: Props_1.Props.EXPIRE_TIME })];
+                }
+            });
+        });
     };
     App.DecodeJWT = function (token) {
         if (token && token != null && token != "null") {
@@ -314,6 +326,13 @@ var App = /** @class */ (function () {
         var t2 = d2.getTime();
         var t1 = d1.getTime();
         var diff = (t2 - t1) / (24 * 3600 * 1000);
+        return parseInt(diff);
+    };
+    App.SyncMinDiff = function (d1, d2) {
+        var t2 = d2.getTime();
+        var t1 = d1.getTime();
+        var diff = (t2 - t1) / (3600 * 1000);
+        console.log(diff);
         return parseInt(diff);
     };
     App.PrintLog = function (routerName, routerType, sessionInfo) {

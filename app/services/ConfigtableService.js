@@ -119,12 +119,8 @@ var ConfigtableService = /** @class */ (function () {
                         return [4 /*yield*/, this.configtableDAO.search(params, Items)];
                     case 5:
                         data = _a.sent();
-                        console.log(data.length);
                         _a.label = 6;
-                    case 6: 
-                    // var t1 = new Date().getTime();
-                    // console.log("took " + (t1 - t0) / 1000 + " milliseconds.");
-                    return [2 /*return*/, data];
+                    case 6: return [2 /*return*/, data];
                     case 7: throw { status: 0, message: "itemid Required" };
                     case 8: return [3 /*break*/, 10];
                     case 9:

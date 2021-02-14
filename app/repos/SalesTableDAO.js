@@ -76,6 +76,26 @@ var SalesTableDAO = /** @class */ (function () {
             });
         });
     };
+    SalesTableDAO.prototype.searchWorkflow = function (data) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        console.log(data);
+                        return [4 /*yield*/, this.dao
+                                .createQueryBuilder("SalesTable")
+                                .leftJoin("SalesTable.movementType", "movementType")
+                                .addSelect("movementType.id")
+                                .addSelect("movementType.movementType")
+                                .addSelect("movementType.movementArabic")
+                                .where(data)
+                                .orderBy("SalesTable.createddatetime", "DESC")
+                                .getOne()];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
+        });
+    };
     SalesTableDAO.prototype.transferorderEntity = function (id) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
@@ -207,6 +227,7 @@ var SalesTableDAO = /** @class */ (function () {
                                 query += " AND \"SalesTable\".\"transkind\" IN " + data.transkind + " and \"SalesTable\".\"salestype\" is null  ORDER BY \"SalesTable\".\"lastmodifieddate\" DESC offset " + (data.page - 1) * data.pageCount + " limit " + data.pageCount + " ";
                                 break;
                         }
+                        console.log(query);
                         return [4 /*yield*/, this.db.query(query)];
                     case 1:
                         result = _a.sent();
@@ -257,6 +278,7 @@ var SalesTableDAO = /** @class */ (function () {
                                 query = "SELECT\n                    DISTINCT on (\"SalesTable\".\"lastmodifieddate\",\"SalesTable\".\"salesid\" )\n                    \"SalesTable\".\"salesid\" AS \"salesId\", \n                    \"SalesTable\".\"salesname\" AS \"salesName\", \n                    \"SalesTable\".\"custaccount\" AS \"custAccount\", \n                    \"customer\".\"name\" AS \"customerNameAr\", \n                    \"customer\".\"namealias\" AS \"customerNameEn\",\n                    \"customer\".\"phone\" AS \"phone\",\n                    \"SalesTable\".\"createddatetime\" AS \"createddatetime\", \n                    \"SalesTable\".\"inventlocationid\" AS \"inventLocationId\", \n                    \"SalesTable\".\"transkind\" AS \"transkind\", \n                    \"SalesTable\".\"status\" AS \"status\", \n                    \"warehouse\".\"name\" AS \"warehouseNameAr\", \n                    \"warehouse\".\"namealias\" AS \"warehouseNameEn\",\n                    \"SalesTable\".\"description\" AS \"description\", \n                    \"SalesTable\".\"intercompanyoriginalsalesid\" AS \"interCompanyOriginalSalesid\",\n                    \"SalesTable\".\"jazeerawarehouse\" As \"jazeeraWarehouse\",\n                    \"SalesTable\".lastmodifieddate As \"lastModifiedDate\"\n                    FROM \"salestable\" \"SalesTable\" \n                    LEFT JOIN \"inventlocation\" \"warehouse\" ON \"warehouse\".\"inventlocationid\"=\"SalesTable\".\"inventlocationid\"\n                    LEFT JOIN \"custtable\" \"customer\" ON \"customer\".\"accountnum\"=\"SalesTable\".\"custaccount\"\n                    WHERE \"SalesTable\".\"inventlocationid\" = '" + inventlocationid + "' \n                    AND \"SalesTable\".\"transkind\" IN " + data.transkind + " ORDER BY \"SalesTable\".\"lastmodifieddate\" DESC ";
                                 break;
                         }
+                        console.log(query);
                         return [4 /*yield*/, this.db.query(query)];
                     case 1:
                         result = _a.sent();

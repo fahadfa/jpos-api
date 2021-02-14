@@ -1,6 +1,6 @@
 {
   "name": "jpos-api",
-  "version": "2.0.16",
+  "version": "2.0.17",
   "main": "index.js",
   "scripts": {
     "start": "npm run build:live",
@@ -17,6 +17,8 @@
   "license": "ISC",
   "homepage": "",
   "dependencies": {
+    "reflect-metadata": "0.1.13",
+    "stream-to-array": "2.3.0",
     "address": "1.1.2",
     "auto-updater": "1.0.2",
     "axios": "0.19.0",

@@ -102,8 +102,8 @@ var TransOrderReport = /** @class */ (function () {
                         console.log(params);
                         renderData = {
                             printDate: App_1.App.convertUTCDateToLocalDate(new Date(App_1.App.DateNow()), parseInt(params.timeZoneOffSet))
-                                .replace(/T/, " ") // replace T with a space
-                                .replace(/\..+/, ""),
+                                .replace // replace T with a space
+                                .replace,
                             fromDate: params.fromDate,
                             toDate: params.toDate,
                             status: params.status,
@@ -113,7 +113,7 @@ var TransOrderReport = /** @class */ (function () {
                         };
                         // console.log(result.salesLine[0].product.nameEnglish);
                         renderData.data = result;
-                        renderData.total = 0;
+                        renderData.total = 0
                         result.map(function (v) {
                             v.quantity = v.quantity ? parseInt(v.quantity) : 0;
                             renderData.total += parseInt(v.quantity);
@@ -142,14 +142,14 @@ var TransOrderReport = /** @class */ (function () {
                                 file = params.lang == "en" ? "osorder-report" : "osorder-report-ar";
                             }
                             else if (params.transkind == "ORDERRECEIVE") {
-                                file = params.lang == "en" ? "ororder-report" : "ororder-report-ar";
+                                file = params.lang ="en" ? "ororder-report" : "ororder-report-ar";
                             }
                             else {
                                 file = params.lang == "en" ? "transorder-report" : "transorder-report-ar";
                             }
                         }
                         try {
-                            return [2 /*return*/, App_1.App.HtmlRender(file, renderData)];
+                            return [2 /*return*/, App_1.App.HtmlRender
                         }
                         catch (error) {
                             throw error;
